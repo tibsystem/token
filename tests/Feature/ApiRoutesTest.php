@@ -25,11 +25,15 @@ class ApiRoutesTest extends TestCase
         $response = $this->postJson('/api/auth/register', [
             'nome' => 'Test User',
             'email' => 'user@example.com',
-            'password' => 'secret'
+            'password' => 'secret',
+            'tipo' => 'investidor'
         ]);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas('users', ['email' => 'user@example.com']);
+        $this->assertDatabaseHas('users', [
+            'email' => 'user@example.com',
+            'tipo' => 'investidor'
+        ]);
     }
 
     public function test_user_profile_route()
