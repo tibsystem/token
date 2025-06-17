@@ -16,7 +16,7 @@ return new class extends Migration
                 $table->id();
                 $table->string('nome', 100);
                 $table->string('email', 120)->unique();
-                $table->string('senha_hash', 256);
+                $table->string('password', 256);
                 $table->enum('tipo', ['investidor','admin','compliance','suporte'])->default('investidor');
                 $table->string('telefone', 30)->nullable();
                 $table->enum('status', ['ativo','inativo','pendente'])->default('pendente');
