@@ -30,12 +30,16 @@ public function login(Request $request)
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
+            'tipo' => 'sometimes|string|in:investidor,admin,compliance,suporte',
+            'telefone' => 'sometimes|nullable|string|max:30',
         ]);
 
-        $user = \App\Models\User::create([
+        $user = User::create([
             'nome' => $data['nome'],
             'email' => $data['email'],
             'senha_hash' => hash('sha256', $data['password']),
+            'tipo' => $data['tipo'] ?? 'investidor',
+            'telefone' => $data['telefone'] ?? null,
         ]);
 
         return response()->json($user, 201);
