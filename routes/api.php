@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\InvestorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
+Route::post('properties', [PropertyController::class, 'store']);
+Route::post('investors', [InvestorController::class, 'store']);
 Route::middleware(['auth:api'])->group(function() {
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('wallet', [WalletController::class, 'show']);
