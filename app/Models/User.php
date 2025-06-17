@@ -8,14 +8,27 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
+
 {
     use HasFactory, Notifiable, HasRoles;
+    
 
     protected $fillable = [
-        'nome', 'email', 'senha_hash', 'tipo', 'telefone', 'status', 'status_kyc'
+        'nome', 'email', 'password', 'tipo', 'telefone', 'status', 'status_kyc'
     ];
+        // Obrigatórios para JWT
+        public function getJWTIdentifier()
+        {
+            return $this->getKey();
+        }
+
+        public function getJWTCustomClaims()
+        {
+            return [];
+        }
 
     public function wallet() {
         return $this->hasOne(Wallet::class);
