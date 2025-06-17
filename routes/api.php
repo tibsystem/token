@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('auth/register', [AuthController::class, 'register']);
+Route::middleware(['auth:api'])->group(function() {
+    Route::get('user/profile', [UserController::class, 'profile']);
+    Route::get('wallet', [WalletController::class, 'show']);
+    Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
+    Route::post('wallet/withdraw', [WalletController::class, 'withdraw']);
+    Route::resource('properties', PropertyController::class);
+    Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
+    Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
+    Route::get('investments/history', [InvestmentController::class, 'history']);
+    Route::resource('support-tickets', SupportTicketController::class);
+    // ...outros endpoints
+});
