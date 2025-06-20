@@ -54,14 +54,16 @@ class ApiRoutesTest extends TestCase
     {
         $this->withoutMiddleware();
         $property = Property::create([
-            'title' => 'Test',
-            'location' => 'Loc',
-            'price' => 1,
+            'titulo' => 'Test',
+            'localizacao' => 'Loc',
+            'valor_total' => 1,
+            'qtd_tokens' => 1,
+            'status' => 'ativo',
         ]);
 
         $this->getJson('/api/properties')->assertStatus(200);
         $this->getJson('/api/properties/' . $property->id)->assertStatus(200);
-        $this->putJson('/api/properties/' . $property->id, ['title' => 'Changed'])
+        $this->putJson('/api/properties/' . $property->id, ['titulo' => 'Changed'])
             ->assertStatus(200);
         $this->deleteJson('/api/properties/' . $property->id)->assertStatus(200);
     }
@@ -70,9 +72,11 @@ class ApiRoutesTest extends TestCase
     {
         $this->withoutMiddleware();
         $property = Property::create([
-            'title' => 'Tokens',
-            'location' => 'Loc',
-            'price' => 2,
+            'titulo' => 'Tokens',
+            'localizacao' => 'Loc',
+            'valor_total' => 2,
+            'qtd_tokens' => 1,
+            'status' => 'ativo',
         ]);
         $this->getJson('/api/properties/' . $property->id . '/tokens')
             ->assertStatus(200);
