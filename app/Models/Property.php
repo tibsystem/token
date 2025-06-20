@@ -11,10 +11,14 @@ class Property extends Model
 
 
     protected $fillable = [
-        'title',
-        'description',
-        'location',
-        'price',
+        'titulo',
+        'descricao',
+        'localizacao',
+        'valor_total',
+        'qtd_tokens',
+        'modelo_smart_id',
+        'status',
+        'data_tokenizacao',
         'user_id',
     ];
 

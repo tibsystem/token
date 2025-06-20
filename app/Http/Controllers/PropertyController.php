@@ -22,10 +22,14 @@ class PropertyController extends Controller
     {
         $property = Property::findOrFail($id);
         $data = $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'location' => 'sometimes|required|string|max:255',
-            'price' => 'sometimes|required|numeric',
+            'titulo' => 'sometimes|required|string|max:255',
+            'descricao' => 'nullable|string',
+            'localizacao' => 'sometimes|required|string|max:255',
+            'valor_total' => 'sometimes|required|numeric',
+            'qtd_tokens' => 'sometimes|required|integer',
+            'modelo_smart_id' => 'nullable|integer',
+            'status' => 'sometimes|required|in:ativo,vendido,oculto',
+            'data_tokenizacao' => 'nullable|date',
         ]);
         $property->update($data);
 
@@ -43,10 +47,14 @@ class PropertyController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'location' => 'required|string|max:255',
-            'price' => 'required|numeric',
+            'titulo' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'localizacao' => 'required|string|max:255',
+            'valor_total' => 'required|numeric',
+            'qtd_tokens' => 'required|integer',
+            'modelo_smart_id' => 'nullable|integer',
+            'status' => 'required|in:ativo,vendido,oculto',
+            'data_tokenizacao' => 'nullable|date',
         ]);
 
         $property = $request->user()->properties()->create($data);

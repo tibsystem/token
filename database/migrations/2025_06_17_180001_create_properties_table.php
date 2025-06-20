@@ -10,10 +10,14 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('location');
-            $table->decimal('price', 15, 2);
+            $table->string('titulo');
+            $table->text('descricao');
+            $table->string('localizacao');
+            $table->decimal('valor_total', 15, 2);
+            $table->integer('qtd_tokens');
+            $table->unsignedBigInteger('modelo_smart_id')->nullable();
+            $table->enum('status', ['ativo', 'vendido', 'oculto'])->default('ativo');
+            $table->dateTime('data_tokenizacao');
             $table->timestamps();
         });
     }
