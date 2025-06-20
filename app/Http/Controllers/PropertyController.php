@@ -49,7 +49,7 @@ class PropertyController extends Controller
             'price' => 'required|numeric',
         ]);
 
-        $property = Property::create($data);
+        $property = $request->user()->properties()->create($data);
 
         return response()->json($property, 201);
     }
