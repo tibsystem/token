@@ -37,7 +37,7 @@ public function login(Request $request)
         $user = User::create([
             'nome' => $data['nome'],
             'email' => $data['email'],
-            'senha_hash' => hash('sha256', $data['password']),
+            'password' => bcrypt($data['password']), // ← CORRETO
             'tipo' => $data['tipo'] ?? 'investidor',
             'telefone' => $data['telefone'] ?? null,
         ]);
