@@ -14,15 +14,17 @@ class PropertyRegistrationTest extends TestCase
         $user = \App\Models\User::factory()->create();
 
         $response = $this->actingAs($user, 'api')->postJson('/api/properties', [
-            'title' => 'House',
-            'description' => 'A big house',
-            'location' => 'City',
-            'price' => 1000,
+            'titulo' => 'House',
+            'descricao' => 'A big house',
+            'localizacao' => 'City',
+            'valor_total' => 1000,
+            'qtd_tokens' => 1,
+            'status' => 'ativo',
         ]);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('properties', [
-            'title' => 'House',
+            'titulo' => 'House',
             'user_id' => $user->id,
         ]);
     }
