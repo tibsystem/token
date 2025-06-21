@@ -10,12 +10,22 @@ class Investment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'amount',
+        'id_investidor',
+        'id_imovel',
+        'qtd_tokens',
+        'valor_unitario',
+        'data_compra',
+        'origem',
+        'status',
     ];
 
-    public function user()
+    public function investor()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Investor::class, 'id_investidor');
+    }
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class, 'id_imovel');
     }
 }

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('transacoes_financeiras', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignId('id_investidor')->constrained('investors');
-            $table->enum('tipo', ['deposito', 'saque', 'rendimento', 'taxa']);
+            $table->enum('tipo', ['deposito', 'saque', 'rendimento', 'taxa', 'compra_token']);
             $table->decimal('valor', 15, 2);
             $table->enum('status', ['pendente', 'concluido', 'falhou'])->default('pendente');
             $table->text('referencia')->nullable();

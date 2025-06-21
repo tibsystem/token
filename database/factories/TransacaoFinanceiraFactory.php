@@ -16,7 +16,7 @@ class TransacaoFinanceiraFactory extends Factory
         return [
             'id' => (string) Str::uuid(),
             'id_investidor' => Investor::factory(),
-            'tipo' => $this->faker->randomElement(['deposito','saque','rendimento','taxa']),
+            'tipo' => $this->faker->randomElement(['deposito','saque','rendimento','taxa','compra_token']),
             'valor' => $this->faker->randomFloat(2, 10, 1000),
             'status' => $this->faker->randomElement(['pendente','concluido','falhou']),
             'referencia' => $this->faker->sentence(),

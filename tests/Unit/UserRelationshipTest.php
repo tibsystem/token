@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Kyc;
 use App\Models\Investment;
+use App\Models\Investor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -30,12 +31,14 @@ class UserRelationshipTest extends TestCase
         $this->assertTrue($user->kyc->first()->is($kycs->first()));
     }
 
-    public function test_user_has_many_investments()
+    public function test_investor_has_many_investments()
     {
-        $user = User::factory()->create();
-        $investments = Investment::factory()->count(3)->create(['user_id' => $user->id]);
+        $investor = Investor::factory()->create();
+        $investments = Investment::factory()->count(3)->create([
+            'id_investidor' => $investor->id,
+        ]);
 
-        $this->assertCount(3, $user->investments);
-        $this->assertTrue($user->investments->first()->is($investments->first()));
+        $this->assertCount(3, $investor->investments);
+        $this->assertTrue($investor->investments->first()->is($investments->first()));
     }
 }

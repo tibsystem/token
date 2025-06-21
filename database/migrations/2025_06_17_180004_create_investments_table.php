@@ -10,8 +10,13 @@ return new class extends Migration
     {
         Schema::create('investments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->decimal('amount', 15, 2);
+            $table->foreignId('id_investidor')->constrained('investors');
+            $table->foreignId('id_imovel')->constrained('properties');
+            $table->integer('qtd_tokens');
+            $table->decimal('valor_unitario', 15, 2);
+            $table->dateTime('data_compra');
+            $table->enum('origem', ['plataforma', 'p2p']);
+            $table->enum('status', ['ativo', 'inativo'])->default('ativo');
             $table->timestamps();
         });
     }
