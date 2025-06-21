@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\InvestmentController;
 use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\TransacaoFinanceiraController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,5 +42,6 @@ Route::middleware(['auth:api'])->group(function() {
     Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
     Route::get('investments/history', [InvestmentController::class, 'history']);
     Route::resource('support-tickets', SupportTicketController::class);
+    Route::resource('transacoes-financeiras', TransacaoFinanceiraController::class);
     // ...outros endpoints
 });
