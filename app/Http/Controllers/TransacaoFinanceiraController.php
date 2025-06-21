@@ -24,7 +24,7 @@ class TransacaoFinanceiraController extends Controller
     {
         $data = $request->validate([
             'id_investidor' => 'required|integer|exists:investors,id',
-            'tipo' => 'required|in:deposito,saque,rendimento,taxa',
+            'tipo' => 'required|in:deposito,saque,rendimento,taxa,compra_token',
             'valor' => 'required|numeric',
             'status' => 'in:pendente,concluido,falhou',
             'referencia' => 'nullable|string',
@@ -53,7 +53,7 @@ class TransacaoFinanceiraController extends Controller
         $transacao = TransacaoFinanceira::findOrFail($id);
         $data = $request->validate([
             'id_investidor' => 'sometimes|integer|exists:investors,id',
-            'tipo' => 'sometimes|in:deposito,saque,rendimento,taxa',
+            'tipo' => 'sometimes|in:deposito,saque,rendimento,taxa,compra_token',
             'valor' => 'sometimes|numeric',
             'status' => 'sometimes|in:pendente,concluido,falhou',
             'referencia' => 'nullable|string',
