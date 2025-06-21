@@ -27,11 +27,13 @@ class InvestmentController extends Controller
         if ($data['origem'] === 'plataforma') {
             $valorTotal = $data['qtd_tokens'] * $data['valor_unitario'];
 
+
             TransacaoFinanceira::create([
                 'id' => (string) Str::uuid(),
                 'id_investidor' => $data['id_investidor'],
                 'tipo' => 'compra_token',
-                'valor' => $valorTotal,
+
+                'valor' => $data['qtd_tokens'] * $data['valor_unitario'],
                 'status' => 'concluido',
                 'referencia' => 'investimento:' . $investment->id,
                 'data_transacao' => $data['data_compra'],
@@ -42,6 +44,7 @@ class InvestmentController extends Controller
                 $carteira->saldo_disponivel -= $valorTotal;
                 $carteira->save();
             }
+
         }
 
         return response()->json($investment);
