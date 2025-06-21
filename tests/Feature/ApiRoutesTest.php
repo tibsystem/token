@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Property;
+use App\Models\Investor;
 
 class ApiRoutesTest extends TestCase
 {
@@ -103,5 +104,17 @@ class ApiRoutesTest extends TestCase
         $this->getJson('/api/support-tickets/1')->assertStatus(200);
         $this->putJson('/api/support-tickets/1', [])->assertStatus(200);
         $this->deleteJson('/api/support-tickets/1')->assertStatus(200);
+    }
+
+    public function test_investor_resource_routes()
+    {
+        $this->withoutMiddleware();
+        $investor = Investor::factory()->create();
+
+        $this->getJson('/api/investors')->assertStatus(200);
+        $this->getJson('/api/investors/' . $investor->id)->assertStatus(200);
+        $this->putJson('/api/investors/' . $investor->id, ['nome' => 'Changed'])
+            ->assertStatus(200);
+        $this->deleteJson('/api/investors/' . $investor->id)->assertStatus(200);
     }
 }
