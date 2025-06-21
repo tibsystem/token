@@ -122,7 +122,7 @@ class ApiRoutesTest extends TestCase
     public function test_transacao_financeira_resource_routes()
     {
         $this->withoutMiddleware();
-        $transacao = \App\Models\TransacaoFinanceira::factory()->create();
+        $transacao = TransacaoFinanceira::factory()->create();
 
         $this->getJson('/api/transacoes-financeiras')->assertStatus(200);
         $this->getJson('/api/transacoes-financeiras/' . $transacao->id)->assertStatus(200);

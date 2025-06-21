@@ -11,6 +11,7 @@ class TransacaoFinanceira extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $table = 'transacoes_financeiras';
 
     protected $fillable = [
         'id',
