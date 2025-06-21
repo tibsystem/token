@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\P2PListing;
 use App\Models\Investment;
+use App\Http\Resources\P2PListingResource;
 
 class P2PListingController extends Controller
 {
     public function index()
     {
-        return response()->json(P2PListing::where('status', 'ativa')->get());
+        return P2PListingResource::collection(
+            P2PListing::where('status', 'ativa')->get()
+        );
     }
 
     public function store(Request $request)
@@ -31,7 +34,7 @@ class P2PListingController extends Controller
         }
 
         $listing = P2PListing::create($data);
-        return response()->json($listing, 201);
+        return new P2PListingResource($listing);
     }
 
     public function destroy($id)
@@ -39,6 +42,6 @@ class P2PListingController extends Controller
         $listing = P2PListing::findOrFail($id);
         $listing->status = 'cancelada';
         $listing->save();
-        return response()->json($listing);
+        return new P2PListingResource($listing);
     }
 }
