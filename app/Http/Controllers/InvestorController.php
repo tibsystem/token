@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Investor;
+use App\Models\CarteiraInterna;
 use Illuminate\Http\Request;
 
 class InvestorController extends Controller
@@ -57,6 +58,14 @@ class InvestorController extends Controller
         ]);
 
         $investor = Investor::create($data);
+
+        CarteiraInterna::create([
+            'id_investidor' => $investor->id,
+            'endereco_wallet' => $investor->carteira_blockchain,
+            'saldo_disponivel' => 0,
+            'saldo_bloqueado' => 0,
+            'saldo_tokenizado' => [],
+        ]);
 
         return response()->json($investor, 201);
     }
