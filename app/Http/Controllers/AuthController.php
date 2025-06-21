@@ -79,6 +79,7 @@ class AuthController extends Controller
      *         )
      *     ),
 
+
      *     @OA\RequestBody(required=true, @OA\JsonContent()),
 
      *     @OA\Response(response=201, description="Criado")
@@ -128,7 +129,7 @@ class AuthController extends Controller
      *             @OA\Property(property="investidor", type="object")
      *         )
      *     ),
-  
+
      *     @OA\Response(response=401, description="Não autorizado")
      * )
      */

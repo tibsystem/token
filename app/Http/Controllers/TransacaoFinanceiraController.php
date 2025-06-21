@@ -111,7 +111,19 @@ class TransacaoFinanceiraController extends Controller
      *     security={{"sanctum":{}}},
      *     summary="Atualizar transação",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"id_investidor","tipo","valor","data_transacao"},
+     *             @OA\Property(property="id_investidor", type="integer", example=1),
+     *             @OA\Property(property="tipo", type="string", example="deposito"),
+     *             @OA\Property(property="valor", type="number", example=500.00),
+     *             @OA\Property(property="status", type="string", example="pendente"),
+     *             @OA\Property(property="referencia", type="string", example="PIX"),
+     *             @OA\Property(property="data_transacao", type="string", example="2024-01-01")
+     *         )
+     *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */

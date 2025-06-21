@@ -80,7 +80,15 @@ class SupportTicketController extends Controller
      *     security={{"sanctum":{}}},
      *     summary="Atualizar ticket",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"assunto","mensagem"},
+     *             @OA\Property(property="assunto", type="string", example="Problema no pagamento"),
+     *             @OA\Property(property="mensagem", type="string", example="Atualização do problema...")
+     *         )
+     *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
