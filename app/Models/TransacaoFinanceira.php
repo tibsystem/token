@@ -9,6 +9,14 @@ class TransacaoFinanceira extends Model
 {
     use HasFactory;
 
+    /**
+     * The table associated with the model.
+     *
+     * This ensures the model uses the correct plural form
+     * defined in the migration.
+     */
+    protected $table = 'transacoes_financeiras';
+
     public $incrementing = false;
     protected $keyType = 'string';
 
