@@ -30,9 +30,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('/auth/investor-login', [AuthController::class, 'loginInvestidor']);
-// investor registration should not require authentication
-Route::post('investors', [InvestorController::class, 'store'])
-    ->withoutMiddleware(['auth:api', 'auth:sanctum']);
+
+
+Route::post('investors', [InvestorController::class, 'store']);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/me/investimentos', function (Request $request) {
