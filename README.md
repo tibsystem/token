@@ -64,4 +64,11 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# token
+
+## Swagger API Documentation
+
+Esta aplicação utiliza o pacote `l5-swagger` para gerar documentação no padrão OpenAPI.
+
+1. Instale as dependências do PHP com Composer.
+2. Execute `php artisan l5-swagger:generate` para gerar os arquivos de documentação.
+3. A interface poderá ser acessada em `/api/documentation` após iniciar o servidor.
