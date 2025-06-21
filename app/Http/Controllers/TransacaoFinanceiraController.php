@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransacaoFinanceira;
+use App\Models\CarteiraInterna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -31,6 +32,19 @@ class TransacaoFinanceiraController extends Controller
         ]);
         $data['id'] = (string) Str::uuid();
         $transacao = TransacaoFinanceira::create($data);
+
+        $carteira = CarteiraInterna::where('id_investidor', $data['id_investidor'])->first();
+
+        if ($carteira) {
+            if ($data['tipo'] === 'deposito') {
+                $carteira->saldo_disponivel += $data['valor'];
+            } elseif ($data['tipo'] === 'saque') {
+                $carteira->saldo_disponivel -= $data['valor'];
+            }
+
+            $carteira->save();
+        }
+
         return response()->json($transacao, 201);
     }
 

@@ -20,5 +20,8 @@ class InvestorRegistrationTest extends TestCase
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('investors', ['email' => 'john@example.com']);
+        $this->assertDatabaseHas('carteiras_internas', [
+            'id_investidor' => 1
+        ]);
     }
 }
