@@ -29,7 +29,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
-Route::post('investors', [InvestorController::class, 'store']);
+Route::post('/auth/investor-login', [AuthController::class, 'loginInvestidor']);
+// investor registration should not require authentication
+Route::post('investors', [InvestorController::class, 'store'])
+    ->withoutMiddleware(['auth:api', 'auth:sanctum']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/me/investimentos', function (Request $request) {
+        return $request->user()->investments;
+    });
+
+    Route::get('/imoveis', [PropertyController::class, 'index']);
+    Route::get('/p2p/ofertas', [P2PListingController::class, 'index']);
+});
 Route::middleware(['auth:api'])->group(function() {
     Route::get('investors', [InvestorController::class, 'index']);
     Route::get('investors/{id}', [InvestorController::class, 'show']);
