@@ -38,7 +38,7 @@ class TransacaoFinanceiraController extends Controller
         if ($carteira) {
             if ($data['tipo'] === 'deposito') {
                 $carteira->saldo_disponivel += $data['valor'];
-            } elseif ($data['tipo'] === 'saque') {
+            } elseif (in_array($data['tipo'], ['saque', 'compra_token'])) {
                 $carteira->saldo_disponivel -= $data['valor'];
             }
 
