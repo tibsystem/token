@@ -57,6 +57,7 @@ class P2PTransactionController extends Controller
      *             @OA\Property(property="comprador_id", type="integer", example=2)
      *         )
      *     ),
+
      *     @OA\Response(response=201, description="Criada")
      * )
      */

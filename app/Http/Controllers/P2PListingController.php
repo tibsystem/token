@@ -52,6 +52,7 @@ class P2PListingController extends Controller
      *             @OA\Property(property="valor_unitario", type="number", example=9.99)
      *         )
      *     ),
+
      *     @OA\Response(response=201, description="Criado")
      * )
      */
