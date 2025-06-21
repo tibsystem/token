@@ -16,6 +16,7 @@ class InvestorRegistrationTest extends TestCase
             'email' => 'john@example.com',
             'documento' => '12345678901',
             'telefone' => '123456789',
+            'senha' => 'secret123',
         ]);
 
         $response->assertStatus(201);

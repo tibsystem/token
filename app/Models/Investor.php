@@ -3,19 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Investor extends Model
+class Investor extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     protected $fillable = [
         'nome',
         'email',
         'documento',
         'telefone',
+        'senha_hash',
         'status_kyc',
         'carteira_blockchain',
+    ];
+
+    protected $hidden = [
+        'senha_hash',
     ];
 
     public function investments()

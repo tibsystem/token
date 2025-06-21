@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Investor;
 use App\Models\CarteiraInterna;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class InvestorController extends Controller
@@ -53,11 +54,20 @@ class InvestorController extends Controller
             'email' => 'required|email|unique:investors,email',
             'documento' => 'required|string|max:50',
             'telefone' => 'nullable|string|max:30',
+            'senha' => 'required|string|min:6',
             'status_kyc' => 'in:pendente,aprovado,rejeitado',
             'carteira_blockchain' => 'nullable|string|max:255',
         ]);
 
-        $investor = Investor::create($data);
+        $investor = Investor::create([
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'documento' => $data['documento'],
+            'telefone' => $data['telefone'],
+            'senha_hash' => Hash::make($data['senha']),
+            'status_kyc' => $data['status_kyc'] ?? 'pendente',
+            'carteira_blockchain' => $data['carteira_blockchain'] ?? null,
+        ]);
 
         CarteiraInterna::create([
             'id_investidor' => $investor->id,

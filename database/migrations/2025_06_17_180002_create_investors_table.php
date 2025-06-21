@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('documento');
             $table->string('telefone')->nullable();
+            $table->string('senha_hash');
             $table->enum('status_kyc', ['pendente', 'aprovado', 'rejeitado'])->default('pendente');
             $table->string('carteira_blockchain')->nullable();
             $table->timestamps();
