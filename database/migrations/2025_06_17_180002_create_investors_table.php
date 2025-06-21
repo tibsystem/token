@@ -10,9 +10,12 @@ return new class extends Migration
     {
         Schema::create('investors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nome');
             $table->string('email')->unique();
-            $table->string('phone')->nullable();
+            $table->string('documento');
+            $table->string('telefone')->nullable();
+            $table->enum('status_kyc', ['pendente', 'aprovado', 'rejeitado'])->default('pendente');
+            $table->string('carteira_blockchain')->nullable();
             $table->timestamps();
         });
     }

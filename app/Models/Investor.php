@@ -10,8 +10,11 @@ class Investor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'nome',
         'email',
-        'phone',
+        'documento',
+        'telefone',
+        'status_kyc',
+        'carteira_blockchain',
     ];
 }

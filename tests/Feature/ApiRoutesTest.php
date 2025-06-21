@@ -55,10 +55,13 @@ class ApiRoutesTest extends TestCase
         $this->withoutMiddleware();
         $property = Property::create([
             'titulo' => 'Test',
+            'descricao' => 'Desc',
             'localizacao' => 'Loc',
             'valor_total' => 1,
             'qtd_tokens' => 1,
             'status' => 'ativo',
+            'data_tokenizacao' => now(),
+            'user_id' => 1,
         ]);
 
         $this->getJson('/api/properties')->assertStatus(200);
@@ -73,10 +76,13 @@ class ApiRoutesTest extends TestCase
         $this->withoutMiddleware();
         $property = Property::create([
             'titulo' => 'Tokens',
+            'descricao' => 'Desc',
             'localizacao' => 'Loc',
             'valor_total' => 2,
             'qtd_tokens' => 1,
             'status' => 'ativo',
+            'data_tokenizacao' => now(),
+            'user_id' => 1,
         ]);
         $this->getJson('/api/properties/' . $property->id . '/tokens')
             ->assertStatus(200);

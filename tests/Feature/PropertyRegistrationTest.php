@@ -20,6 +20,7 @@ class PropertyRegistrationTest extends TestCase
             'valor_total' => 1000,
             'qtd_tokens' => 1,
             'status' => 'ativo',
+            'data_tokenizacao' => now(),
         ]);
 
         $response->assertStatus(201);
