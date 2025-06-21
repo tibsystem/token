@@ -8,9 +8,27 @@ use App\Models\P2PListing;
 use App\Models\TransacaoToken;
 use App\Models\Investment;
 use App\Models\CarteiraInterna;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="P2P Transactions",
+ *     description="Transações de compra e venda P2P"
+ * )
+ */
 class P2PTransactionController extends Controller
 {
+    /**
+     * Listar transações P2P.
+     *
+     * @OA\Get(
+     *     path="/api/p2p/transactions",
+     *     tags={"P2P Transactions"},
+     *     security={{"sanctum":{}}},
+     *     summary="Listar transações",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function index(Request $request)
     {
         $id = $request->query('investidor_id');
@@ -23,6 +41,25 @@ class P2PTransactionController extends Controller
         return response()->json($query->get());
     }
 
+    /**
+     * Realizar transação de compra de oferta P2P.
+     *
+     * @OA\Post(
+     *     path="/api/p2p/transactions",
+     *     tags={"P2P Transactions"},
+     *     security={{"sanctum":{}}},
+     *     summary="Comprar oferta",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"listing_id","comprador_id"},
+     *             @OA\Property(property="listing_id", type="integer", example=5),
+     *             @OA\Property(property="comprador_id", type="integer", example=2)
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Criada")
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
