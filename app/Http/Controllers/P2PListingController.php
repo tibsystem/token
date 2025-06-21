@@ -42,7 +42,17 @@ class P2PListingController extends Controller
      *     tags={"P2P Listings"},
      *     security={{"sanctum":{}}},
      *     summary="Criar oferta",
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"vendedor_id","id_imovel","qtd_tokens","valor_unitario"},
+     *             @OA\Property(property="vendedor_id", type="integer", example=1),
+     *             @OA\Property(property="id_imovel", type="integer", example=10),
+     *             @OA\Property(property="qtd_tokens", type="integer", example=100),
+     *             @OA\Property(property="valor_unitario", type="number", example=9.99)
+     *         )
+     *     ),
+
      *     @OA\Response(response=201, description="Criado")
      * )
      */

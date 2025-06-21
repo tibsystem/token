@@ -58,7 +58,19 @@ class TransacaoFinanceiraController extends Controller
      *     tags={"Financial Transactions"},
      *     security={{"sanctum":{}}},
      *     summary="Registrar transação",
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"id_investidor","tipo","valor","data_transacao"},
+     *             @OA\Property(property="id_investidor", type="integer", example=1),
+     *             @OA\Property(property="tipo", type="string", example="deposito"),
+     *             @OA\Property(property="valor", type="number", example=1000),
+     *             @OA\Property(property="status", type="string", example="pendente"),
+     *             @OA\Property(property="referencia", type="string", example="PIX"),
+     *             @OA\Property(property="data_transacao", type="string", example="2024-01-01")
+     *         )
+     *     ),
+
      *     @OA\Response(response=201, description="Criada")
      * )
      */

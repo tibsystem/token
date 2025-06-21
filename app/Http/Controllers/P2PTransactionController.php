@@ -49,7 +49,15 @@ class P2PTransactionController extends Controller
      *     tags={"P2P Transactions"},
      *     security={{"sanctum":{}}},
      *     summary="Comprar oferta",
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"listing_id","comprador_id"},
+     *             @OA\Property(property="listing_id", type="integer", example=5),
+     *             @OA\Property(property="comprador_id", type="integer", example=2)
+     *         )
+     *     ),
+
      *     @OA\Response(response=201, description="Criada")
      * )
      */

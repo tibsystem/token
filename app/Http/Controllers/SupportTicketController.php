@@ -37,7 +37,15 @@ class SupportTicketController extends Controller
      *     tags={"Support Tickets"},
      *     security={{"sanctum":{}}},
      *     summary="Criar ticket",
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"assunto","mensagem"},
+     *             @OA\Property(property="assunto", type="string", example="Problema no pagamento"),
+     *             @OA\Property(property="mensagem", type="string", example="Detalhes do problema...")
+     *         )
+     *     ),
+
      *     @OA\Response(response=201, description="Criado")
      * )
      */

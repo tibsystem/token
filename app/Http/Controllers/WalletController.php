@@ -37,7 +37,14 @@ class WalletController extends Controller
      *     tags={"Wallet"},
      *     security={{"sanctum":{}}},
      *     summary="Adicionar fundos",
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"valor"},
+     *             @OA\Property(property="valor", type="number", example=500)
+     *         )
+     *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
@@ -54,7 +61,14 @@ class WalletController extends Controller
      *     tags={"Wallet"},
      *     security={{"sanctum":{}}},
      *     summary="Sacar fundos",
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"valor"},
+     *             @OA\Property(property="valor", type="number", example=200)
+     *         )
+     *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
