@@ -10,6 +10,8 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\InvestmentController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TransacaoFinanceiraController;
+use App\Http\Controllers\P2PListingController;
+use App\Http\Controllers\P2PTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,11 @@ Route::middleware(['auth:api'])->group(function() {
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
     Route::get('investments/history', [InvestmentController::class, 'history']);
+    Route::get('p2p/listings', [P2PListingController::class, 'index']);
+    Route::post('p2p/listings', [P2PListingController::class, 'store']);
+    Route::delete('p2p/listings/{id}', [P2PListingController::class, 'destroy']);
+    Route::get('p2p/transactions', [P2PTransactionController::class, 'index']);
+    Route::post('p2p/transactions', [P2PTransactionController::class, 'store']);
     Route::resource('support-tickets', SupportTicketController::class);
     Route::resource('transacoes-financeiras', TransacaoFinanceiraController::class);
     // ...outros endpoints
