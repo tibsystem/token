@@ -7,9 +7,40 @@ use App\Models\Investment;
 use App\Models\TransacaoFinanceira;
 use App\Models\CarteiraInterna;
 use Illuminate\Support\Str;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="Investments",
+ *     description="Operações de investimentos"
+ * )
+ */
 class InvestmentController extends Controller
 {
+    /**
+     * Realizar compra de tokens de um imóvel.
+     *
+     * @OA\Post(
+     *     path="/api/investments/purchase",
+     *     tags={"Investments"},
+     *     security={{"sanctum":{}}},
+     *     summary="Comprar tokens",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"id_investidor","id_imovel","qtd_tokens","valor_unitario","data_compra","origem"},
+     *             @OA\Property(property="id_investidor", type="integer", example=1),
+     *             @OA\Property(property="id_imovel", type="integer", example=10),
+     *             @OA\Property(property="qtd_tokens", type="integer", example=100),
+     *             @OA\Property(property="valor_unitario", type="number", example=9.99),
+     *             @OA\Property(property="data_compra", type="string", example="2024-01-01"),
+     *             @OA\Property(property="origem", type="string", example="plataforma"),
+     *             @OA\Property(property="status", type="string", example="ativo")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function purchase(Request $request)
     {
         $data = $request->validate([
@@ -50,6 +81,17 @@ class InvestmentController extends Controller
         return response()->json($investment);
     }
 
+    /**
+     * Histórico de investimentos do usuário autenticado.
+     *
+     * @OA\Get(
+     *     path="/api/investments/history",
+     *     tags={"Investments"},
+     *     security={{"sanctum":{}}},
+     *     summary="Histórico de investimentos",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function history()
     {
         return response()->json([]);

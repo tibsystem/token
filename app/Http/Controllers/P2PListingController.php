@@ -6,9 +6,27 @@ use Illuminate\Http\Request;
 use App\Models\P2PListing;
 use App\Models\Investment;
 use App\Http\Resources\P2PListingResource;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="P2P Listings",
+ *     description="Listagens de tokens para venda P2P"
+ * )
+ */
 class P2PListingController extends Controller
 {
+    /**
+     * Listar ofertas P2P ativas.
+     *
+     * @OA\Get(
+     *     path="/api/p2p/listings",
+     *     tags={"P2P Listings"},
+     *     security={{"sanctum":{}}},
+     *     summary="Listar ofertas",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function index()
     {
         return P2PListingResource::collection(
@@ -16,6 +34,27 @@ class P2PListingController extends Controller
         );
     }
 
+    /**
+     * Criar nova oferta P2P.
+     *
+     * @OA\Post(
+     *     path="/api/p2p/listings",
+     *     tags={"P2P Listings"},
+     *     security={{"sanctum":{}}},
+     *     summary="Criar oferta",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"vendedor_id","id_imovel","qtd_tokens","valor_unitario"},
+     *             @OA\Property(property="vendedor_id", type="integer", example=1),
+     *             @OA\Property(property="id_imovel", type="integer", example=10),
+     *             @OA\Property(property="qtd_tokens", type="integer", example=100),
+     *             @OA\Property(property="valor_unitario", type="number", example=9.99)
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Criado")
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -37,6 +76,18 @@ class P2PListingController extends Controller
         return new P2PListingResource($listing);
     }
 
+    /**
+     * Cancelar uma oferta P2P.
+     *
+     * @OA\Delete(
+     *     path="/api/p2p/listings/{id}",
+     *     tags={"P2P Listings"},
+     *     security={{"sanctum":{}}},
+     *     summary="Cancelar oferta",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function destroy($id)
     {
         $listing = P2PListing::findOrFail($id);

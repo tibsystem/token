@@ -36,11 +36,39 @@ Route::post('investors', [InvestorController::class, 'store']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    /**
+     * @OA\Get(
+     *     path="/api/me/investimentos",
+     *     tags={"Investments"},
+     *     security={{"sanctum":{}}},
+     *     summary="Listar investimentos do usuário autenticado",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     Route::get('/me/investimentos', function (Request $request) {
         return $request->user()->investments;
     });
 
+    /**
+     * @OA\Get(
+     *     path="/api/imoveis",
+     *     tags={"Properties"},
+     *     security={{"sanctum":{}}},
+     *     summary="Listar imóveis (atalho)",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     Route::get('/imoveis', [PropertyController::class, 'index']);
+
+    /**
+     * @OA\Get(
+     *     path="/api/p2p/ofertas",
+     *     tags={"P2P Listings"},
+     *     security={{"sanctum":{}}},
+     *     summary="Listar ofertas P2P (atalho)",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     Route::get('/p2p/ofertas', [P2PListingController::class, 'index']);
 });
 Route::middleware(['auth:api'])->group(function() {

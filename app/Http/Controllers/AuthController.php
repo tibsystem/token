@@ -6,12 +6,45 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Investor;
 use Illuminate\Support\Facades\Hash;
+use OpenApi\Annotations as OA;
 
 
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="Autenticação de usuários"
+ * )
+ */
 class AuthController extends Controller
 {
 
-public function login(Request $request)
+    /**
+     * Autenticar usuário e obter token JWT.
+     *
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     tags={"Auth"},
+     *     summary="Login de usuário",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", example="secret")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="abc123"),
+     *             @OA\Property(property="user", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Não autorizado")
+     * )
+     */
+    public function login(Request $request)
 {
     $credentials = $request->only(['email', 'password']);
 
@@ -26,6 +59,27 @@ public function login(Request $request)
     ]);
 }
 
+    /**
+     * Registrar novo usuário.
+     *
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     tags={"Auth"},
+     *     summary="Registrar usuário",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nome","email","password"},
+     *             @OA\Property(property="nome", type="string", example="João"),
+     *             @OA\Property(property="email", type="string", example="joao@example.com"),
+     *             @OA\Property(property="password", type="string", example="secret"),
+     *             @OA\Property(property="tipo", type="string", example="investidor"),
+     *             @OA\Property(property="telefone", type="string", example="11999998888")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Criado")
+     * )
+     */
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -47,6 +101,32 @@ public function login(Request $request)
         return response()->json($user, 201);
     }
 
+    /**
+     * Login específico para investidores.
+     *
+     * @OA\Post(
+     *     path="/api/auth/investor-login",
+     *     tags={"Auth"},
+     *     summary="Login de investidor",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","senha"},
+     *             @OA\Property(property="email", type="string", example="invest@example.com"),
+     *             @OA\Property(property="senha", type="string", example="senhaSegura")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="abc123"),
+     *             @OA\Property(property="investidor", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Não autorizado")
+     * )
+     */
     public function loginInvestidor(Request $request)
     {
         $data = $request->validate([
