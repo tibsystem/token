@@ -70,6 +70,7 @@ class TransacaoFinanceiraController extends Controller
      *             @OA\Property(property="data_transacao", type="string", example="2024-01-01")
      *         )
      *     ),
+
      *     @OA\Response(response=201, description="Criada")
      * )
      */
@@ -122,6 +123,7 @@ class TransacaoFinanceiraController extends Controller
      *             @OA\Property(property="data_transacao", type="string", example="2024-01-01")
      *         )
      *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */

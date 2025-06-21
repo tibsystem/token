@@ -74,6 +74,7 @@ class InvestorController extends Controller
      *             @OA\Property(property="carteira_blockchain", type="string", example="0xABC123")
      *         )
      *     ),
+
      *     @OA\Response(response=200, description="Atualizado")
      * )
      */
@@ -135,6 +136,7 @@ class InvestorController extends Controller
      *             @OA\Property(property="carteira_blockchain", type="string", example="0xABC123")
      *         )
      *     ),
+
      *     @OA\Response(response=201, description="Criado")
      * )
      */

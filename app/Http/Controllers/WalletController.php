@@ -44,6 +44,7 @@ class WalletController extends Controller
      *             @OA\Property(property="valor", type="number", example=500)
      *         )
      *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
@@ -67,6 +68,7 @@ class WalletController extends Controller
      *             @OA\Property(property="valor", type="number", example=200)
      *         )
      *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */

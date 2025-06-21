@@ -70,6 +70,7 @@ class PropertyController extends Controller
      *             @OA\Property(property="data_tokenizacao", type="string", example="2024-05-20")
      *         )
      *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
@@ -132,6 +133,7 @@ class PropertyController extends Controller
      *             @OA\Property(property="data_tokenizacao", type="string", example="2024-05-20")
      *         )
      *     ),
+
      *     @OA\Response(response=201, description="Criado")
      * )
      */

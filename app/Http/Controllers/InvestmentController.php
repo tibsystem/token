@@ -38,6 +38,7 @@ class InvestmentController extends Controller
      *             @OA\Property(property="status", type="string", example="ativo")
      *         )
      *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */

@@ -45,6 +45,7 @@ class SupportTicketController extends Controller
      *             @OA\Property(property="mensagem", type="string", example="Detalhes do problema...")
      *         )
      *     ),
+
      *     @OA\Response(response=201, description="Criado")
      * )
      */
@@ -87,6 +88,7 @@ class SupportTicketController extends Controller
      *             @OA\Property(property="mensagem", type="string", example="Atualização do problema...")
      *         )
      *     ),
+
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
