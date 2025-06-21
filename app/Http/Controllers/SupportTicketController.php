@@ -55,7 +55,14 @@ class SupportTicketController extends Controller
     }
 
     /**
-     * Exibir ticket.
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"assunto","mensagem"},
+     *             @OA\Property(property="assunto", type="string", example="Problema no pagamento"),
+     *             @OA\Property(property="mensagem", type="string", example="Atualização do problema...")
+     *         )
+     *     ),
      *
      * @OA\Get(
      *     path="/api/support-tickets/{id}",

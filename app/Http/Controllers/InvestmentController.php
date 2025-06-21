@@ -25,7 +25,19 @@ class InvestmentController extends Controller
      *     tags={"Investments"},
      *     security={{"sanctum":{}}},
      *     summary="Comprar tokens",
-     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"id_investidor","id_imovel","qtd_tokens","valor_unitario","data_compra","origem"},
+     *             @OA\Property(property="id_investidor", type="integer", example=1),
+     *             @OA\Property(property="id_imovel", type="integer", example=10),
+     *             @OA\Property(property="qtd_tokens", type="integer", example=100),
+     *             @OA\Property(property="valor_unitario", type="number", example=9.99),
+     *             @OA\Property(property="data_compra", type="string", example="2024-01-01"),
+     *             @OA\Property(property="origem", type="string", example="plataforma"),
+     *             @OA\Property(property="status", type="string", example="ativo")
+     *         )
+     *     ),
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
