@@ -93,7 +93,18 @@ class ApiRoutesTest extends TestCase
     public function test_investment_routes()
     {
         $this->withoutMiddleware();
-        $this->postJson('/api/investments/purchase')->assertStatus(200);
+        $investor = \App\Models\Investor::factory()->create();
+        $property = \App\Models\Property::factory()->create();
+
+        $this->postJson('/api/investments/purchase', [
+            'id_investidor' => $investor->id,
+            'id_imovel' => $property->id,
+            'qtd_tokens' => 1,
+            'valor_unitario' => 10,
+            'data_compra' => now()->toDateTimeString(),
+            'origem' => 'plataforma',
+            'status' => 'ativo',
+        ])->assertStatus(200);
         $this->getJson('/api/investments/history')->assertStatus(200);
     }
 

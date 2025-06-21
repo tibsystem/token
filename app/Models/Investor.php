@@ -17,4 +17,9 @@ class Investor extends Model
         'status_kyc',
         'carteira_blockchain',
     ];
+
+    public function investments()
+    {
+        return $this->hasMany(Investment::class, 'id_investidor');
+    }
 }
