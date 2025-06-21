@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Property;
 use App\Models\Investor;
+use App\Models\TransacaoFinanceira;
 
 class ApiRoutesTest extends TestCase
 {
@@ -116,5 +117,17 @@ class ApiRoutesTest extends TestCase
         $this->putJson('/api/investors/' . $investor->id, ['nome' => 'Changed'])
             ->assertStatus(200);
         $this->deleteJson('/api/investors/' . $investor->id)->assertStatus(200);
+    }
+
+    public function test_transacao_financeira_resource_routes()
+    {
+        $this->withoutMiddleware();
+        $transacao = \App\Models\TransacaoFinanceira::factory()->create();
+
+        $this->getJson('/api/transacoes-financeiras')->assertStatus(200);
+        $this->getJson('/api/transacoes-financeiras/' . $transacao->id)->assertStatus(200);
+        $this->putJson('/api/transacoes-financeiras/' . $transacao->id, ['valor' => 50])
+            ->assertStatus(200);
+        $this->deleteJson('/api/transacoes-financeiras/' . $transacao->id)->assertStatus(200);
     }
 }
