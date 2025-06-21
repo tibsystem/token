@@ -6,12 +6,31 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Investor;
 use Illuminate\Support\Facades\Hash;
+use OpenApi\Annotations as OA;
 
 
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="Autenticação de usuários"
+ * )
+ */
 class AuthController extends Controller
 {
 
-public function login(Request $request)
+    /**
+     * Autenticar usuário e obter token JWT.
+     *
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     tags={"Auth"},
+     *     summary="Login de usuário",
+     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\Response(response=200, description="Sucesso"),
+     *     @OA\Response(response=401, description="Não autorizado")
+     * )
+     */
+    public function login(Request $request)
 {
     $credentials = $request->only(['email', 'password']);
 
@@ -26,6 +45,17 @@ public function login(Request $request)
     ]);
 }
 
+    /**
+     * Registrar novo usuário.
+     *
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     tags={"Auth"},
+     *     summary="Registrar usuário",
+     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\Response(response=201, description="Criado")
+     * )
+     */
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -47,6 +77,18 @@ public function login(Request $request)
         return response()->json($user, 201);
     }
 
+    /**
+     * Login específico para investidores.
+     *
+     * @OA\Post(
+     *     path="/api/auth/investor-login",
+     *     tags={"Auth"},
+     *     summary="Login de investidor",
+     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\Response(response=200, description="Sucesso"),
+     *     @OA\Response(response=401, description="Não autorizado")
+     * )
+     */
     public function loginInvestidor(Request $request)
     {
         $data = $request->validate([

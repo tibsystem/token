@@ -7,9 +7,28 @@ use App\Models\Investment;
 use App\Models\TransacaoFinanceira;
 use App\Models\CarteiraInterna;
 use Illuminate\Support\Str;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="Investments",
+ *     description="Operações de investimentos"
+ * )
+ */
 class InvestmentController extends Controller
 {
+    /**
+     * Realizar compra de tokens de um imóvel.
+     *
+     * @OA\Post(
+     *     path="/api/investments/purchase",
+     *     tags={"Investments"},
+     *     security={{"sanctum":{}}},
+     *     summary="Comprar tokens",
+     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function purchase(Request $request)
     {
         $data = $request->validate([
@@ -50,6 +69,17 @@ class InvestmentController extends Controller
         return response()->json($investment);
     }
 
+    /**
+     * Histórico de investimentos do usuário autenticado.
+     *
+     * @OA\Get(
+     *     path="/api/investments/history",
+     *     tags={"Investments"},
+     *     security={{"sanctum":{}}},
+     *     summary="Histórico de investimentos",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function history()
     {
         return response()->json([]);
