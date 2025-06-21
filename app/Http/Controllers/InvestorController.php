@@ -10,9 +10,12 @@ class InvestorController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:investors,email',
-            'phone' => 'nullable|string|max:30',
+            'documento' => 'required|string|max:50',
+            'telefone' => 'nullable|string|max:30',
+            'status_kyc' => 'in:pendente,aprovado,rejeitado',
+            'carteira_blockchain' => 'nullable|string|max:255',
         ]);
 
         $investor = Investor::create($data);

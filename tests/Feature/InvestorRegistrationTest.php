@@ -12,9 +12,10 @@ class InvestorRegistrationTest extends TestCase
     public function test_investor_can_be_registered(): void
     {
         $response = $this->postJson('/api/investors', [
-            'name' => 'John Doe',
+            'nome' => 'John Doe',
             'email' => 'john@example.com',
-            'phone' => '123456789',
+            'documento' => '12345678901',
+            'telefone' => '123456789',
         ]);
 
         $response->assertStatus(201);
