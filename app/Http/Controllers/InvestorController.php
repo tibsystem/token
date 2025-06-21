@@ -6,14 +6,45 @@ use App\Models\Investor;
 use App\Models\CarteiraInterna;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="Investors",
+ *     description="Gerenciamento de investidores"
+ * )
+ */
 class InvestorController extends Controller
 {
+    /**
+     * Lista todos os investidores.
+     *
+     * @OA\Get(
+     *     path="/api/investors",
+     *     tags={"Investors"},
+     *     security={{"sanctum":{}}},
+     *     summary="Obter lista de investidores",
+     *     @OA\Response(response=200, description="Sucesso")
+     * )
+     */
     public function index()
     {
         return response()->json(Investor::all());
     }
 
+    /**
+     * Exibe um investidor específico.
+     *
+     * @OA\Get(
+     *     path="/api/investors/{id}",
+     *     tags={"Investors"},
+     *     security={{"sanctum":{}}},
+     *     summary="Detalhes do investidor",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Sucesso"),
+     *     @OA\Response(response=404, description="Não encontrado")
+     * )
+     */
     public function show($id)
     {
         $investor = Investor::findOrFail($id);
@@ -21,6 +52,19 @@ class InvestorController extends Controller
         return response()->json($investor);
     }
 
+    /**
+     * Atualiza um investidor.
+     *
+     * @OA\Put(
+     *     path="/api/investors/{id}",
+     *     tags={"Investors"},
+     *     security={{"sanctum":{}}},
+     *     summary="Atualizar investidor",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\Response(response=200, description="Atualizado")
+     * )
+     */
     public function update(Request $request, $id)
     {
         $investor = Investor::findOrFail($id);
@@ -39,6 +83,18 @@ class InvestorController extends Controller
         return response()->json($investor);
     }
 
+    /**
+     * Remove um investidor.
+     *
+     * @OA\Delete(
+     *     path="/api/investors/{id}",
+     *     tags={"Investors"},
+     *     security={{"sanctum":{}}},
+     *     summary="Excluir investidor",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Excluído")
+     * )
+     */
     public function destroy($id)
     {
         $investor = Investor::findOrFail($id);
@@ -47,6 +103,17 @@ class InvestorController extends Controller
         return response()->json(['deleted' => true]);
     }
 
+    /**
+     * Cria um novo investidor.
+     *
+     * @OA\Post(
+     *     path="/api/investors",
+     *     tags={"Investors"},
+     *     summary="Cadastrar investidor",
+     *     @OA\RequestBody(required=true, @OA\JsonContent()),
+     *     @OA\Response(response=201, description="Criado")
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
