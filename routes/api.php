@@ -28,6 +28,10 @@ Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('investors', [InvestorController::class, 'store']);
 Route::middleware(['auth:api'])->group(function() {
+    Route::get('investors', [InvestorController::class, 'index']);
+    Route::get('investors/{id}', [InvestorController::class, 'show']);
+    Route::put('investors/{id}', [InvestorController::class, 'update']);
+    Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('wallet', [WalletController::class, 'show']);
     Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
