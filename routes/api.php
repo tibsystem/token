@@ -24,7 +24,7 @@ use App\Http\Controllers\P2PTransactionController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('auth/login', [AuthController::class, 'login']);
@@ -35,7 +35,8 @@ Route::post('/auth/investor-login', [AuthController::class, 'loginInvestidor']);
 Route::post('investors', [InvestorController::class, 'store']);
 
 
-Route::middleware(['auth:sanctum'])->group(function () {
+// Rotas de acesso do investidor autenticado
+Route::middleware(['auth:investor'])->group(function () {
     /**
      * @OA\Get(
      *     path="/api/me/investimentos",
@@ -71,16 +72,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/p2p/ofertas', [P2PListingController::class, 'index']);
 });
-Route::middleware(['auth:investor'])->group(function() {
+
+// Rotas administrativas protegidas por auth:api e verificação de administrador
+Route::middleware(['auth:api','isAdmin'])->group(function() {
     Route::get('investors', [InvestorController::class, 'index']);
     Route::get('investors/{id}', [InvestorController::class, 'show']);
     Route::put('investors/{id}', [InvestorController::class, 'update']);
     Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
+    Route::resource('properties', PropertyController::class);
+    Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
+    Route::get('user/profile', [UserController::class, 'profile']);
+});
+
+// Funcionalidades disponíveis para investidores autenticados
+Route::middleware(['auth:investor'])->group(function() {
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('wallet', [WalletController::class, 'show']);
     Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
     Route::post('wallet/withdraw', [WalletController::class, 'withdraw']);
-    Route::resource('properties', PropertyController::class);
+    Route::get('properties', [PropertyController::class, 'index']);
+    Route::get('properties/{id}', [PropertyController::class, 'show']);
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
     Route::get('investments/history', [InvestmentController::class, 'history']);
