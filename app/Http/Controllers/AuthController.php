@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Investor;
-use Illuminate\Support\Facades\Hash;
 use OpenApi\Annotations as OA;
 
 
@@ -140,18 +138,16 @@ class AuthController extends Controller
             'senha' => 'required|string'
         ]);
 
-        $investidor = Investor::where('email', $data['email'])->first();
+        $credentials = ['email' => $data['email'], 'password' => $data['senha']];
 
-        if (!$investidor || !Hash::check($data['senha'], $investidor->senha_hash)) {
+        if (! $token = Auth::guard('investor')->attempt($credentials)) {
             return response()->json(['message' => 'Credenciais inválidas'], 401);
         }
-
-        $token = $investidor->createToken('investidor_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login realizado com sucesso',
             'token' => $token,
-            'investidor' => $investidor
+            'investidor' => Auth::guard('investor')->user(),
         ]);
     }
 }

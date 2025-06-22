@@ -71,7 +71,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/p2p/ofertas', [P2PListingController::class, 'index']);
 });
-Route::middleware(['auth:api'])->group(function() {
+Route::middleware(['auth:investor'])->group(function() {
     Route::get('investors', [InvestorController::class, 'index']);
     Route::get('investors/{id}', [InvestorController::class, 'show']);
     Route::put('investors/{id}', [InvestorController::class, 'update']);
