@@ -11,7 +11,7 @@ class PropertyRegistrationTest extends TestCase
 
     public function test_property_can_be_registered(): void
     {
-        $user = \App\Models\User::factory()->create();
+        $user = \App\Models\User::factory()->create(['tipo' => 'admin']);
 
         $response = $this->actingAs($user, 'api')->postJson('/api/properties', [
             'titulo' => 'House',
@@ -27,6 +27,7 @@ class PropertyRegistrationTest extends TestCase
         $this->assertDatabaseHas('properties', [
             'titulo' => 'House',
             'user_id' => $user->id,
+            'qtd_tokens_original' => 1,
         ]);
     }
 }

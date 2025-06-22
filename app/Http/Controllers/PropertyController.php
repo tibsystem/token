@@ -150,7 +150,9 @@ class PropertyController extends Controller
             'data_tokenizacao' => 'nullable|date',
         ]);
 
-        $property = $request->user()->properties()->create($data);
+        $property = $request->user()->properties()->create(
+            $data + ['qtd_tokens_original' => $request->qtd_tokens]
+        );
 
         return response()->json($property, 201);
     }
