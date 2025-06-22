@@ -13,6 +13,7 @@ class TransacaoFinanceiraRegistrationTest extends TestCase
 
     public function test_transacao_financeira_can_be_registered(): void
     {
+        $this->withoutMiddleware();
         $investor = Investor::factory()->create();
         CarteiraInterna::factory()->create(['id_investidor' => $investor->id]);
 

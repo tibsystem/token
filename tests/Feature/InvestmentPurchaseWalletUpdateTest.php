@@ -14,6 +14,7 @@ class InvestmentPurchaseWalletUpdateTest extends TestCase
 
     public function test_purchase_updates_wallet_balance(): void
     {
+        $this->withoutMiddleware();
         $investor = Investor::factory()->create();
         CarteiraInterna::factory()->create([
             'id_investidor' => $investor->id,
