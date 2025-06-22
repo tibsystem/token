@@ -16,6 +16,7 @@ class Property extends Model
         'localizacao',
         'valor_total',
         'qtd_tokens',
+        'qtd_tokens_original',
         'modelo_smart_id',
         'status',
         'data_tokenizacao',
