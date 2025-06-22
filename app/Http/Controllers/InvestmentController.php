@@ -7,6 +7,8 @@ use App\Models\Investment;
 use App\Models\TransacaoFinanceira;
 use App\Models\CarteiraInterna;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use App\Models\Property;
 use OpenApi\Annotations as OA;
 
 /**
@@ -54,29 +56,39 @@ class InvestmentController extends Controller
             'status' => 'in:ativo,inativo',
         ]);
 
-        $investment = Investment::create($data);
+        try {
+            $investment = DB::transaction(function () use ($data) {
+                $property = Property::lockForUpdate()->find($data['id_imovel']);
+                if (!$property || !$property->decreaseTokens($data['qtd_tokens'])) {
+                    throw new \RuntimeException('Tokens insuficientes');
+                }
 
-        if ($data['origem'] === 'plataforma') {
-            $valorTotal = $data['qtd_tokens'] * $data['valor_unitario'];
+                $investment = Investment::create($data);
 
+                if ($data['origem'] === 'plataforma') {
+                    $valorTotal = $data['qtd_tokens'] * $data['valor_unitario'];
 
-            TransacaoFinanceira::create([
-                'id' => (string) Str::uuid(),
-                'id_investidor' => $data['id_investidor'],
-                'tipo' => 'compra_token',
+                    TransacaoFinanceira::create([
+                        'id' => (string) Str::uuid(),
+                        'id_investidor' => $data['id_investidor'],
+                        'tipo' => 'compra_token',
+                        'valor' => $valorTotal,
+                        'status' => 'concluido',
+                        'referencia' => 'investimento:' . $investment->id,
+                        'data_transacao' => $data['data_compra'],
+                    ]);
 
-                'valor' => $data['qtd_tokens'] * $data['valor_unitario'],
-                'status' => 'concluido',
-                'referencia' => 'investimento:' . $investment->id,
-                'data_transacao' => $data['data_compra'],
-            ]);
+                    $carteira = CarteiraInterna::where('id_investidor', $data['id_investidor'])->first();
+                    if ($carteira) {
+                        $carteira->saldo_disponivel -= $valorTotal;
+                        $carteira->save();
+                    }
+                }
 
-            $carteira = CarteiraInterna::where('id_investidor', $data['id_investidor'])->first();
-            if ($carteira) {
-                $carteira->saldo_disponivel -= $valorTotal;
-                $carteira->save();
-            }
-
+                return $investment;
+            });
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
         }
 
         return response()->json($investment);

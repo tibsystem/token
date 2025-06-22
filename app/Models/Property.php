@@ -31,4 +31,20 @@ class Property extends Model
     {
         return $this->hasMany(Investment::class, 'id_imovel');
     }
+
+    /**
+     * Diminui a quantidade disponível de tokens do imóvel.
+     *
+     * @param int $qtd Quantidade de tokens a ser subtraída
+     * @return bool      True em caso de sucesso
+     */
+    public function decreaseTokens(int $qtd): bool
+    {
+        if ($qtd < 0 || $this->qtd_tokens < $qtd) {
+            return false;
+        }
+
+        $this->qtd_tokens -= $qtd;
+        return $this->save();
+    }
 }

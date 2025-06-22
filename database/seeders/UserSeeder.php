@@ -12,7 +12,8 @@ class UserSeeder extends Seeder
         User::create([
             'nome' => 'wesley',
             'email' => 'wesley@ibsystem.com.br',
-            'password' => hash('sha256', '12345678'),
+            'password' => bcrypt('12345678'),
+            'tipo' => 'admin',
         ]);
     }
 }
