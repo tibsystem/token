@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\CarteiraInterna;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
 
@@ -24,9 +24,10 @@ class WalletController extends Controller
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
-    public function show()
+    public function show($id)
     {
-        return response()->json(['balance' => 0]);
+        $carteia = CarteiraInterna::where('id_investidor', $id)->firstOrFail();
+        return response()->json($carteia); 
     }
 
     /**

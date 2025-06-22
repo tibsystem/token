@@ -1,0 +1,1363 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Tokenization Platform API",
+        "description": "Documentação da API da plataforma de tokenização",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login de usuário",
+                "description": "Autenticar usuário e obter token JWT.",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "abc123"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrar usuário",
+                "description": "Registrar novo usuário.",
+                "operationId": "d764dd091cc4494ae0baf360b03319f3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "João"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "joao@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret"
+                                    },
+                                    "tipo": {
+                                        "type": "string",
+                                        "example": "investidor"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "11999998888"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Criado"
+                    }
+                }
+            }
+        },
+        "/api/auth/investor-login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login de investidor",
+                "description": "Login específico para investidores.",
+                "operationId": "8d83f236d30d3a8799f764883ff1338c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "senha"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "invest@example.com"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "senhaSegura"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "abc123"
+                                        },
+                                        "investidor": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                }
+            }
+        },
+        "/api/investments/purchase": {
+            "post": {
+                "tags": [
+                    "Investments"
+                ],
+                "summary": "Comprar tokens",
+                "description": "Realizar compra de tokens de um imóvel.",
+                "operationId": "b1517d264a3b903db97db0e95406d342",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/investments/history": {
+            "get": {
+                "tags": [
+                    "Investments"
+                ],
+                "summary": "Histórico de investimentos",
+                "description": "Histórico de investimentos do usuário autenticado.",
+                "operationId": "e4914f0002d40b85e4142c31370ed60f",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/investors": {
+            "get": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Obter lista de investidores",
+                "description": "Lista todos os investidores.",
+                "operationId": "28e9639bee19f1cb74e1daa1c9f6088b",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Cadastrar investidor",
+                "description": "Cria um novo investidor.",
+                "operationId": "ae7fbd5cbb612c2518a717e02a4c119d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome",
+                                    "email",
+                                    "documento",
+                                    "senha"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Maria"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "maria@example.com"
+                                    },
+                                    "documento": {
+                                        "type": "string",
+                                        "example": "12345678900"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "11888887777"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "senhaSegura"
+                                    },
+                                    "status_kyc": {
+                                        "type": "string",
+                                        "example": "pendente"
+                                    },
+                                    "carteira_blockchain": {
+                                        "type": "string",
+                                        "example": "0xABC123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Criado"
+                    }
+                }
+            }
+        },
+        "/api/investors/{id}": {
+            "get": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Detalhes do investidor",
+                "description": "Exibe um investidor específico.",
+                "operationId": "b31fdd9f855c22c1fad73328958a970e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    },
+                    "404": {
+                        "description": "Não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Atualizar investidor",
+                "description": "Atualiza um investidor.",
+                "operationId": "64d50bcd3f0b8fdfdfebaae6c2998c62",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nome",
+                                    "email",
+                                    "documento",
+                                    "senha"
+                                ],
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "Maria"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "maria@example.com"
+                                    },
+                                    "documento": {
+                                        "type": "string",
+                                        "example": "12345678900"
+                                    },
+                                    "telefone": {
+                                        "type": "string",
+                                        "example": "11888887777"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "senhaSegura"
+                                    },
+                                    "status_kyc": {
+                                        "type": "string",
+                                        "example": "pendente"
+                                    },
+                                    "carteira_blockchain": {
+                                        "type": "string",
+                                        "example": "0xABC123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Atualizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Excluir investidor",
+                "description": "Remove um investidor.",
+                "operationId": "b196c3da1c65106d861e338b048ece01",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excluído"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/p2p/listings": {
+            "get": {
+                "tags": [
+                    "P2P Listings"
+                ],
+                "summary": "Listar ofertas",
+                "description": "Listar ofertas P2P ativas.",
+                "operationId": "06cd68c8be757db4d041715f4c4fc50e",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "P2P Listings"
+                ],
+                "summary": "Criar oferta",
+                "description": "Criar nova oferta P2P.",
+                "operationId": "57e183d25b4e9426054469bd1bc14562",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "vendedor_id",
+                                    "id_imovel",
+                                    "qtd_tokens",
+                                    "valor_unitario"
+                                ],
+                                "properties": {
+                                    "vendedor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "id_imovel": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "qtd_tokens": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "valor_unitario": {
+                                        "type": "number",
+                                        "example": 9.99
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Criado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/p2p/listings/{id}": {
+            "delete": {
+                "tags": [
+                    "P2P Listings"
+                ],
+                "summary": "Cancelar oferta",
+                "description": "Cancelar uma oferta P2P.",
+                "operationId": "c3679a8226ee0fc0165fd49d484570ba",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/p2p/transactions": {
+            "get": {
+                "tags": [
+                    "P2P Transactions"
+                ],
+                "summary": "Listar transações",
+                "description": "Listar transações P2P.",
+                "operationId": "de1bdd5f984a8a100c2526449f57e594",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "P2P Transactions"
+                ],
+                "summary": "Comprar oferta",
+                "description": "Realizar transação de compra de oferta P2P.",
+                "operationId": "5fa7ee12b28471a72ba25a43b56aa547",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "listing_id",
+                                    "comprador_id"
+                                ],
+                                "properties": {
+                                    "listing_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "comprador_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Criada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/properties": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Listar imóveis",
+                "description": "Listar imóveis cadastrados.",
+                "operationId": "ae50890d9da51a5cfe01cd2151d4077a",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Criar imóvel",
+                "description": "Cadastrar novo imóvel.",
+                "operationId": "debc241247e30f0490b9e236483217d0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "localizacao",
+                                    "valor_total",
+                                    "qtd_tokens",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Apartamento Vista Mar"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Descrição do imóvel"
+                                    },
+                                    "localizacao": {
+                                        "type": "string",
+                                        "example": "Rio de Janeiro"
+                                    },
+                                    "valor_total": {
+                                        "type": "number",
+                                        "example": 500000
+                                    },
+                                    "qtd_tokens": {
+                                        "type": "integer",
+                                        "example": 10000
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "ativo"
+                                    },
+                                    "data_tokenizacao": {
+                                        "type": "string",
+                                        "example": "2024-05-20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Criado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/properties/{id}": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Detalhes do imóvel",
+                "description": "Exibir detalhes de um imóvel.",
+                "operationId": "1ffeff79c18b3281ff5e01339a5831e7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Atualizar imóvel",
+                "description": "Atualizar dados de um imóvel.",
+                "operationId": "d5f20f7ec2d5b865985ee2a307481311",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "localizacao",
+                                    "valor_total",
+                                    "qtd_tokens",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Apartamento Vista Mar"
+                                    },
+                                    "descricao": {
+                                        "type": "string",
+                                        "example": "Descrição do imóvel"
+                                    },
+                                    "localizacao": {
+                                        "type": "string",
+                                        "example": "Rio de Janeiro"
+                                    },
+                                    "valor_total": {
+                                        "type": "number",
+                                        "example": 500000
+                                    },
+                                    "qtd_tokens": {
+                                        "type": "integer",
+                                        "example": 10000
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "ativo"
+                                    },
+                                    "data_tokenizacao": {
+                                        "type": "string",
+                                        "example": "2024-05-20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Excluir imóvel",
+                "description": "Remover um imóvel.",
+                "operationId": "a1f3cd4975f784df9ae3f810e13a2066",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/properties/{id}/tokens": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Tokens do imóvel",
+                "description": "Listar tokens associados ao imóvel.",
+                "operationId": "9e866ca7766b1785579cceaba1366563",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/support-tickets": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Listar tickets",
+                "description": "Listar tickets de suporte.",
+                "operationId": "2d6b7c48d61bcd3d110d3ff9c0269c5e",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Criar ticket",
+                "description": "Abrir novo ticket de suporte.",
+                "operationId": "f957339d66548bd2321bb050937edbe9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "assunto",
+                                    "mensagem"
+                                ],
+                                "properties": {
+                                    "assunto": {
+                                        "type": "string",
+                                        "example": "Problema no pagamento"
+                                    },
+                                    "mensagem": {
+                                        "type": "string",
+                                        "example": "Detalhes do problema..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Criado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/support-tickets/{id}": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Mostrar ticket",
+                "description": "Exibir ticket.",
+                "operationId": "6631e19cac8edf0ba43b556cc382cd4e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Atualizar ticket",
+                "description": "Atualizar ticket.",
+                "operationId": "5b20543a40223923c7e7e6c1fe796056",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Excluir ticket",
+                "description": "Excluir ticket.",
+                "operationId": "43ff4085b31bf41490c2a27c1c94211c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transacoes-financeiras": {
+            "get": {
+                "tags": [
+                    "Financial Transactions"
+                ],
+                "summary": "Listar transações",
+                "description": "Listar transações financeiras.",
+                "operationId": "2376f46ec6613b2db7711d618e2e4738",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Financial Transactions"
+                ],
+                "summary": "Registrar transação",
+                "description": "Criar nova transação financeira.",
+                "operationId": "bed038e4a43be1a19be4c2b7af3d407c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_investidor",
+                                    "tipo",
+                                    "valor",
+                                    "data_transacao"
+                                ],
+                                "properties": {
+                                    "id_investidor": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tipo": {
+                                        "type": "string",
+                                        "example": "deposito"
+                                    },
+                                    "valor": {
+                                        "type": "number",
+                                        "example": 1000
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "pendente"
+                                    },
+                                    "referencia": {
+                                        "type": "string",
+                                        "example": "PIX"
+                                    },
+                                    "data_transacao": {
+                                        "type": "string",
+                                        "example": "2024-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Criada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transacoes-financeiras/{id}": {
+            "get": {
+                "tags": [
+                    "Financial Transactions"
+                ],
+                "summary": "Detalhes da transação",
+                "description": "Mostrar uma transação específica.",
+                "operationId": "3249c2f5ac721198d80a8aa65ac21afc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Financial Transactions"
+                ],
+                "summary": "Atualizar transação",
+                "description": "Atualizar transação financeira.",
+                "operationId": "0693fd2a57fa4236bd5b9da44a72f69e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Financial Transactions"
+                ],
+                "summary": "Excluir transação",
+                "description": "Remover transação financeira.",
+                "operationId": "0dcc4247a76d7dfb705a828d25abfcdb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/user/profile": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Perfil do usuário",
+                "description": "Recuperar dados do usuário logado.",
+                "operationId": "a89d41894c20f774de86b3c94ba2fd77",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wallet": {
+            "get": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Consultar saldo",
+                "description": "Exibe saldo da carteira.",
+                "operationId": "b0aeab5a5b4b667ad1a4726d02a324cf",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wallet/add-funds": {
+            "post": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Adicionar fundos",
+                "description": "Adicionar fundos à carteira.",
+                "operationId": "4b51c0e83ec51785cafd358407a852c7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "valor"
+                                ],
+                                "properties": {
+                                    "valor": {
+                                        "type": "number",
+                                        "example": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/wallet/withdraw": {
+            "post": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Sacar fundos",
+                "description": "Solicitar saque de fundos.",
+                "operationId": "73405c27b66fe831f83304cefd43c831",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "valor"
+                                ],
+                                "properties": {
+                                    "valor": {
+                                        "type": "number",
+                                        "example": 200
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Autenticação de usuários"
+        },
+        {
+            "name": "Investments",
+            "description": "Operações de investimentos"
+        },
+        {
+            "name": "Investors",
+            "description": "Gerenciamento de investidores"
+        },
+        {
+            "name": "P2P Listings",
+            "description": "Listagens de tokens para venda P2P"
+        },
+        {
+            "name": "P2P Transactions",
+            "description": "Transações de compra e venda P2P"
+        },
+        {
+            "name": "Properties",
+            "description": "Gerenciamento de imóveis"
+        },
+        {
+            "name": "Support Tickets",
+            "description": "Atendimento de suporte"
+        },
+        {
+            "name": "Financial Transactions",
+            "description": "Movimentações financeiras"
+        },
+        {
+            "name": "Users",
+            "description": "Perfil do usuário autenticado"
+        },
+        {
+            "name": "Wallet",
+            "description": "Operações da carteira do investidor"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}

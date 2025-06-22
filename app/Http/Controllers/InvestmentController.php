@@ -93,6 +93,17 @@ class InvestmentController extends Controller
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
+     public function index()
+    {
+        return response()->json(Investment::all());
+    }
+
+      public function show($id)
+    {
+        $investment = Investment::where('id_investidor', $id)->get();
+        return response()->json($investment);
+    }
+    
     public function history()
     {
         return response()->json([]);

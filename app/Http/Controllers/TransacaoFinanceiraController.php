@@ -50,6 +50,12 @@ class TransacaoFinanceiraController extends Controller
         return response()->json($transacao);
     }
 
+      public function showinvest($id)
+    {
+        $transacao = TransacaoFinanceira::where('id_investidor', $id)->get();
+        return response()->json($transacao);
+    }
+
     /**
      * Criar nova transação financeira.
      *

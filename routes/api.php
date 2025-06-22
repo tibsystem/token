@@ -73,27 +73,30 @@ Route::middleware(['auth:investor'])->group(function () {
     Route::get('/p2p/ofertas', [P2PListingController::class, 'index']);
 });
 
+
 // Rotas administrativas protegidas por auth:api e verificação de administrador
 Route::middleware(['auth:api','isAdmin'])->group(function() {
+    Route::get('investments', [InvestmentController::class, 'index']);
     Route::get('investors', [InvestorController::class, 'index']);
     Route::get('investors/{id}', [InvestorController::class, 'show']);
     Route::put('investors/{id}', [InvestorController::class, 'update']);
     Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
-    Route::resource('properties', PropertyController::class);
-    Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
+    Route::resource('admin/properties', PropertyController::class);
+    Route::get('admin/properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::get('user/profile', [UserController::class, 'profile']);
 });
 
 // Funcionalidades disponíveis para investidores autenticados
 Route::middleware(['auth:investor'])->group(function() {
     Route::get('user/profile', [UserController::class, 'profile']);
-    Route::get('wallet', [WalletController::class, 'show']);
+    Route::get('wallet/{id}', [WalletController::class, 'show']);
     Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
     Route::post('wallet/withdraw', [WalletController::class, 'withdraw']);
     Route::get('properties', [PropertyController::class, 'index']);
     Route::get('properties/{id}', [PropertyController::class, 'show']);
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
+    Route::get('investments/{id}', [InvestmentController::class, 'show']);
     Route::get('investments/history', [InvestmentController::class, 'history']);
     Route::get('p2p/listings', [P2PListingController::class, 'index']);
     Route::post('p2p/listings', [P2PListingController::class, 'store']);
@@ -101,6 +104,7 @@ Route::middleware(['auth:investor'])->group(function() {
     Route::get('p2p/transactions', [P2PTransactionController::class, 'index']);
     Route::post('p2p/transactions', [P2PTransactionController::class, 'store']);
     Route::resource('support-tickets', SupportTicketController::class);
+    Route::get('transacoes-financeiras-lista/{id}', [TransacaoFinanceiraController::class, 'showinvest']);
     Route::resource('transacoes-financeiras', TransacaoFinanceiraController::class);
     // ...outros endpoints
 });
