@@ -63,6 +63,12 @@ class InvestmentController extends Controller
                     throw new \RuntimeException('Tokens insuficientes');
                 }
 
+                // Atualiza status do imóvel caso todos os tokens tenham sido vendidos
+                if ($property->qtd_tokens === 0 && $property->status !== 'vendido') {
+                    $property->status = 'vendido';
+                    $property->save();
+                }
+
                 $investment = Investment::create($data);
 
                 if ($data['origem'] === 'plataforma') {
