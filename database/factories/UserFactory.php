@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'nome' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password' => hash('sha256', 'password'),
+            'password' => bcrypt('password'),
             'tipo' => 'investidor',
             'status' => 'ativo',
             'status_kyc' => 'pendente',
