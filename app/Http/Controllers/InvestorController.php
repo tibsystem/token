@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Investor;
 use App\Models\CarteiraInterna;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
 
@@ -149,8 +150,9 @@ class InvestorController extends Controller
             'telefone' => 'nullable|string|max:30',
             'senha' => 'required|string|min:6',
             'status_kyc' => 'in:pendente,aprovado,rejeitado',
-            'carteira_blockchain' => 'nullable|string|max:255',
         ]);
+
+        $wallet = $this->generatePolygonWallet();
 
         $investor = Investor::create([
             'nome' => $data['nome'],
@@ -159,17 +161,42 @@ class InvestorController extends Controller
             'telefone' => $data['telefone'],
             'senha_hash' => Hash::make($data['senha']),
             'status_kyc' => $data['status_kyc'] ?? 'pendente',
-            'carteira_blockchain' => $data['carteira_blockchain'] ?? null,
+            'carteira_blockchain' => $wallet['address'],
+            'carteira_private_key' => Crypt::encryptString($wallet['private_key']),
         ]);
 
         CarteiraInterna::create([
             'id_investidor' => $investor->id,
-            'endereco_wallet' => $investor->carteira_blockchain,
+            'endereco_wallet' => $wallet['address'],
             'saldo_disponivel' => 0,
             'saldo_bloqueado' => 0,
             'saldo_tokenizado' => [],
         ]);
 
         return response()->json($investor, 201);
+    }
+
+    private function generatePolygonWallet(): array
+    {
+        $config = [
+            'private_key_type' => OPENSSL_KEYTYPE_EC,
+            'curve_name' => 'secp256k1',
+        ];
+        $res = openssl_pkey_new($config);
+        openssl_pkey_export($res, $privPem);
+        $details = openssl_pkey_get_details($res);
+
+        $d = $details['ec']['d'] ?? '';
+        $x = $details['ec']['x'] ?? '';
+        $y = $details['ec']['y'] ?? '';
+        $privKey = bin2hex($d);
+        $pubKey = '04' . bin2hex($x) . bin2hex($y);
+        $hash = hash('sha3-256', hex2bin($pubKey));
+        $address = '0x' . substr($hash, -40);
+
+        return [
+            'address' => $address,
+            'private_key' => $privKey,
+        ];
     }
 }
