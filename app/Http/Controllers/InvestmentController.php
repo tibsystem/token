@@ -8,6 +8,7 @@ use App\Models\TransacaoFinanceira;
 use App\Models\CarteiraInterna;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\LogTransacaoHelper;
 use App\Models\Property;
 use OpenApi\Annotations as OA;
 
@@ -96,6 +97,13 @@ class InvestmentController extends Controller
         } catch (\RuntimeException $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
+
+        LogTransacaoHelper::registrar(
+            'compra_token',
+            array_merge($data, ['investment_id' => $investment->id]),
+            auth('investor')->user(),
+            $data['id_imovel']
+        );
 
         return response()->json($investment);
     }

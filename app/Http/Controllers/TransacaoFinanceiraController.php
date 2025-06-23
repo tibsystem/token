@@ -6,6 +6,7 @@ use App\Models\TransacaoFinanceira;
 use App\Models\CarteiraInterna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Helpers\LogTransacaoHelper;
 use OpenApi\Annotations as OA;
 
 /**
@@ -108,6 +109,12 @@ class TransacaoFinanceiraController extends Controller
 
             $carteira->save();
         }
+
+        LogTransacaoHelper::registrar(
+            $data['tipo'],
+            $data,
+            auth('investor')->user()
+        );
 
         return response()->json($transacao, 201);
     }
