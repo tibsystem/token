@@ -84,6 +84,10 @@ Route::middleware(['auth:api','isAdmin'])->group(function() {
     Route::resource('admin/properties', PropertyController::class);
     Route::get('admin/properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::get('user/profile', [UserController::class, 'profile']);
+    Route::get('admin/transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
+    Route::get('admin/properties', [PropertyController::class, 'index']);
+
+
 });
 
 // Funcionalidades disponíveis para investidores autenticados

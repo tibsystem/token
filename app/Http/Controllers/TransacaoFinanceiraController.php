@@ -49,10 +49,14 @@ class TransacaoFinanceiraController extends Controller
         $transacao = TransacaoFinanceira::findOrFail($id);
         return response()->json($transacao);
     }
-
+   public function lista()
+    {
+        $transacao = TransacaoFinanceira::all();
+        return response()->json($transacao);
+    }
       public function showinvest($id)
     {
-        $transacao = TransacaoFinanceira::where('id_investidor', $id)->get();
+        $transacao = TransacaoFinanceira::findOrFail($id);
         return response()->json($transacao);
     }
 
