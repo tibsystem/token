@@ -25,4 +25,19 @@ class TransacaoToken extends Model
         'tx_hash',
         'status',
     ];
+
+    public function vendedor()
+    {
+        return $this->belongsTo(Investor::class, 'vendedor_id');
+    }
+
+    public function comprador()
+    {
+        return $this->belongsTo(Investor::class, 'comprador_id');
+    }
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class, 'id_imovel');
+    }
 }

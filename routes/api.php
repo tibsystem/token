@@ -12,6 +12,7 @@ use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TransacaoFinanceiraController;
 use App\Http\Controllers\P2PListingController;
 use App\Http\Controllers\P2PTransactionController;
+use App\Http\Controllers\PropertyFinanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,7 @@ Route::middleware(['auth:api','isAdmin'])->group(function() {
     Route::resource('properties', PropertyController::class);
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::get('user/profile', [UserController::class, 'profile']);
+    Route::get('admin/imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
 });
 
 // Funcionalidades disponíveis para investidores autenticados
