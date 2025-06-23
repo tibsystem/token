@@ -8,6 +8,7 @@ use App\Models\P2PListing;
 use App\Models\TransacaoToken;
 use App\Models\Investment;
 use App\Models\CarteiraInterna;
+use App\Helpers\LogTransacaoHelper;
 use OpenApi\Annotations as OA;
 
 /**
@@ -129,6 +130,13 @@ class P2PTransactionController extends Controller
             'data_transacao' => now(),
             'status' => 'concluida',
         ]);
+
+        LogTransacaoHelper::registrar(
+            'p2p_venda',
+            array_merge($data, ['transacao_id' => $transacao->id]),
+            auth('investor')->user(),
+            $listing->id_imovel
+        );
 
         return response()->json($transacao, 201);
     }

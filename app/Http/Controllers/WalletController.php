@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
+use App\Helpers\LogTransacaoHelper;
 
 /**
  * @OA\Tag(
@@ -50,6 +51,16 @@ class WalletController extends Controller
      */
     public function addFunds(Request $request)
     {
+        $data = $request->validate([
+            'valor' => 'required|numeric',
+        ]);
+
+        LogTransacaoHelper::registrar(
+            'deposito',
+            $data,
+            auth('investor')->user()
+        );
+
         return response()->json(['message' => 'Funds added']);
     }
 
@@ -74,6 +85,16 @@ class WalletController extends Controller
      */
     public function withdraw(Request $request)
     {
+        $data = $request->validate([
+            'valor' => 'required|numeric',
+        ]);
+
+        LogTransacaoHelper::registrar(
+            'saque',
+            $data,
+            auth('investor')->user()
+        );
+
         return response()->json(['message' => 'Withdraw processed']);
     }
 }
