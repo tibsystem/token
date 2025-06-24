@@ -192,7 +192,47 @@
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": {}
+                            "schema": {
+                                "required": [
+                                    "id_investidor",
+                                    "id_imovel",
+                                    "qtd_tokens",
+                                    "valor_unitario",
+                                    "data_compra",
+                                    "origem"
+                                ],
+                                "properties": {
+                                    "id_investidor": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "id_imovel": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "qtd_tokens": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "valor_unitario": {
+                                        "type": "number",
+                                        "example": 9.99
+                                    },
+                                    "data_compra": {
+                                        "type": "string",
+                                        "example": "2024-01-01"
+                                    },
+                                    "origem": {
+                                        "type": "string",
+                                        "example": "plataforma"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "ativo"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
                 },
@@ -215,7 +255,7 @@
                 ],
                 "summary": "Histórico de investimentos",
                 "description": "Histórico de investimentos do usuário autenticado.",
-                "operationId": "e4914f0002d40b85e4142c31370ed60f",
+                "operationId": "3147a51d495a29b74b46d8abd93edbea",
                 "responses": {
                     "200": {
                         "description": "Sucesso"
@@ -966,7 +1006,23 @@
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": {}
+                            "schema": {
+                                "required": [
+                                    "assunto",
+                                    "mensagem"
+                                ],
+                                "properties": {
+                                    "assunto": {
+                                        "type": "string",
+                                        "example": "Problema no pagamento"
+                                    },
+                                    "mensagem": {
+                                        "type": "string",
+                                        "example": "Atualização do problema..."
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
                 },
@@ -1140,7 +1196,41 @@
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": {}
+                            "schema": {
+                                "required": [
+                                    "id_investidor",
+                                    "tipo",
+                                    "valor",
+                                    "data_transacao"
+                                ],
+                                "properties": {
+                                    "id_investidor": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tipo": {
+                                        "type": "string",
+                                        "example": "deposito"
+                                    },
+                                    "valor": {
+                                        "type": "number",
+                                        "example": 500
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "pendente"
+                                    },
+                                    "referencia": {
+                                        "type": "string",
+                                        "example": "PIX"
+                                    },
+                                    "data_transacao": {
+                                        "type": "string",
+                                        "example": "2024-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
                 },
