@@ -1,18 +1,19 @@
 <?php
-use App\Http\Controllers\AuthController;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PropertyController;
-use App\Http\Controllers\InvestorController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WalletController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InvestmentController;
-use App\Http\Controllers\SupportTicketController;
-use App\Http\Controllers\TransacaoFinanceiraController;
+use App\Http\Controllers\InvestorController;
 use App\Http\Controllers\P2PListingController;
 use App\Http\Controllers\P2PTransactionController;
+use App\Http\Controllers\PolygonController;
+use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyFinanceController;
+use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\TransacaoFinanceiraController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WalletController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +33,8 @@ Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('/auth/investor-login', [AuthController::class, 'loginInvestidor']);
 
-
-Route::post('admin/investors', [InvestorController::class, 'store']);
-
+Route::post('investors', [InvestorController::class, 'store']);
+Route::get('polygon/balance/{address}', [PolygonController::class, 'balance']);
 
 // Rotas de acesso do investidor autenticado
 Route::middleware(['auth:investor'])->group(function () {
@@ -44,6 +44,7 @@ Route::middleware(['auth:investor'])->group(function () {
      *     tags={"Investments"},
      *     security={{"sanctum":{}}},
      *     summary="Listar investimentos do usuário autenticado",
+     *
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
@@ -57,6 +58,7 @@ Route::middleware(['auth:investor'])->group(function () {
      *     tags={"Properties"},
      *     security={{"sanctum":{}}},
      *     summary="Listar imóveis (atalho)",
+     *
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
@@ -68,6 +70,7 @@ Route::middleware(['auth:investor'])->group(function () {
      *     tags={"P2P Listings"},
      *     security={{"sanctum":{}}},
      *     summary="Listar ofertas P2P (atalho)",
+     *
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
@@ -93,7 +96,7 @@ Route::middleware(['auth:api','isAdmin'])->group(function() {
 });
 
 // Funcionalidades disponíveis para investidores autenticados
-Route::middleware(['auth:investor'])->group(function() {
+Route::middleware(['auth:investor'])->group(function () {
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('wallet/{id}', [WalletController::class, 'show']);
     Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
