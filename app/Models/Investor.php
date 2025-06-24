@@ -19,10 +19,12 @@ class Investor extends Authenticatable implements JWTSubject
         'senha_hash',
         'status_kyc',
         'carteira_blockchain',
+        'carteira_private_key',
     ];
 
     protected $hidden = [
         'senha_hash',
+        'carteira_private_key',
     ];
 
     public function investments()
