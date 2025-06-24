@@ -85,8 +85,9 @@ Route::middleware(['auth:api','isAdmin'])->group(function() {
     Route::get('investors/{id}', [InvestorController::class, 'show']);
     Route::put('investors/{id}', [InvestorController::class, 'update']);
     Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
-    Route::resource('admin/properties', PropertyController::class);
-    Route::get('admin/properties/{id}/tokens', [PropertyController::class, 'tokens']);
+    Route::resource('properties', PropertyController::class);
+    Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
+    Route::post('properties/{id}/tokenize', [PropertyController::class, 'tokenize']);
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('admin/imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
     Route::get('admin/transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
