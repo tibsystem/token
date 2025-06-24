@@ -33,7 +33,7 @@ Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('/auth/investor-login', [AuthController::class, 'loginInvestidor']);
 
-Route::post('investors', [InvestorController::class, 'store']);
+Route::post('admin/investors', [InvestorController::class, 'store']);
 Route::get('polygon/balance/{address}', [PolygonController::class, 'balance']);
 
 // Rotas de acesso do investidor autenticado
