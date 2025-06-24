@@ -176,4 +176,41 @@ class PropertyController extends Controller
             'tokens' => []
         ]);
     }
+
+    /**
+     * Tokenizar imóvel e implantar contrato na Polygon.
+     */
+    public function tokenize(Request $request, $id)
+    {
+        $property = Property::findOrFail($id);
+
+        if ($property->contract_address) {
+            return response()->json(['message' => 'Property already tokenized'], 400);
+        }
+
+        $data = $request->validate([
+            'contract_model_id' => 'required|exists:smart_contract_models,id',
+            'token_name' => 'required|string',
+            'token_symbol' => 'required|string',
+            'total_supply' => 'required|integer'
+        ]);
+
+        \Artisan::call('deploy:property', [
+            'propertyId' => $property->id,
+            '--model' => $data['contract_model_id'],
+            '--name' => $data['token_name'],
+            '--symbol' => $data['token_symbol'],
+            '--supply' => $data['total_supply']
+        ]);
+
+        $property->refresh();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Tokenization complete',
+            'contract_address' => $property->contract_address,
+            'token_symbol' => $property->token_symbol,
+            'token_name' => $property->token_name,
+        ]);
+    }
 }

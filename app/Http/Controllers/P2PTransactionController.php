@@ -9,6 +9,8 @@ use App\Models\TransacaoToken;
 use App\Models\Investment;
 use App\Models\CarteiraInterna;
 use App\Helpers\LogTransacaoHelper;
+use Illuminate\Support\Facades\Crypt;
+use Symfony\Component\Process\Process;
 use OpenApi\Annotations as OA;
 
 /**
@@ -120,7 +122,7 @@ class P2PTransactionController extends Controller
         $listing->status = 'concluida';
         $listing->save();
 
-        $transacao = TransacaoToken::create([
+       $transacao = TransacaoToken::create([
             'id' => (string) Str::uuid(),
             'vendedor_id' => $listing->vendedor_id,
             'comprador_id' => $data['comprador_id'],
@@ -130,6 +132,41 @@ class P2PTransactionController extends Controller
             'data_transacao' => now(),
             'status' => 'concluida',
         ]);
+
+        $txHash = null;
+        $property = $listing->property;
+        if ($property && $property->contract_address) {
+            try {
+                $seller = $listing->vendedor;
+                $buyer = $transacao->comprador;
+                $privKey = Crypt::decryptString($seller->carteira_private_key);
+
+                $abiPath = storage_path('app/'.uniqid('abi_').'.json');
+                file_put_contents($abiPath, $property->contract_abi);
+
+                $process = new Process([
+                    'node', base_path('scripts/transfer_token.js'),
+                    $property->contract_address,
+                    $abiPath,
+                    $privKey,
+                    $buyer->carteira_blockchain,
+                    $listing->qtd_tokens
+                ]);
+                $process->run();
+                if ($process->isSuccessful()) {
+                    $out = json_decode($process->getOutput(), true);
+                    $txHash = $out['txHash'] ?? null;
+                } else {
+                    LogTransacaoHelper::registrar('p2p_transfer_error', ['error' => $process->getErrorOutput()], auth('investor')->user(), $property->id);
+                }
+                @unlink($abiPath);
+            } catch (\Exception $e) {
+                LogTransacaoHelper::registrar('p2p_transfer_error', ['error' => $e->getMessage()], auth('investor')->user(), $property->id);
+            }
+        }
+
+        $transacao->tx_hash = $txHash;
+        $transacao->save();
 
         LogTransacaoHelper::registrar(
             'p2p_venda',
