@@ -85,6 +85,7 @@ Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
     Route::resource('properties', PropertyController::class);
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
+    Route::post('properties/{id}/tokenize', [PropertyController::class, 'tokenize']);
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('admin/imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
 });
