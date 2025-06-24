@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Investor;
+use App\Models\Property;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Property;
-use App\Models\Investor;
-use App\Models\TransacaoFinanceira;
 
 class ApiRoutesTest extends TestCase
 {
@@ -16,7 +15,7 @@ class ApiRoutesTest extends TestCase
     {
         $response = $this->postJson('/api/auth/login', [
             'email' => 'fake@example.com',
-            'password' => 'invalid'
+            'password' => 'invalid',
         ]);
 
         $response->assertStatus(401);
@@ -28,13 +27,13 @@ class ApiRoutesTest extends TestCase
             'nome' => 'Test User',
             'email' => 'user@example.com',
             'password' => 'secret',
-            'tipo' => 'investidor'
+            'tipo' => 'investidor',
         ]);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('users', [
             'email' => 'user@example.com',
-            'tipo' => 'investidor'
+            'tipo' => 'investidor',
         ]);
     }
 
@@ -48,8 +47,16 @@ class ApiRoutesTest extends TestCase
     {
         $this->withoutMiddleware();
         $this->getJson('/api/wallet')->assertStatus(200);
-        $this->postJson('/api/wallet/add-funds')->assertStatus(200);
-        $this->postJson('/api/wallet/withdraw')->assertStatus(200);
+        $this->postJson('/api/wallet/add-funds', ['valor' => 10])
+            ->assertStatus(200);
+        $this->postJson('/api/wallet/withdraw', ['valor' => 5])
+            ->assertStatus(200);
+    }
+
+    public function test_polygon_balance_route()
+    {
+        $this->withoutMiddleware();
+        $this->getJson('/api/polygon/balance/0xABC')->assertStatus(200);
     }
 
     public function test_property_resource_routes()
@@ -68,10 +75,10 @@ class ApiRoutesTest extends TestCase
         ]);
 
         $this->getJson('/api/properties')->assertStatus(200);
-        $this->getJson('/api/properties/' . $property->id)->assertStatus(200);
-        $this->putJson('/api/properties/' . $property->id, ['titulo' => 'Changed'])
+        $this->getJson('/api/properties/'.$property->id)->assertStatus(200);
+        $this->putJson('/api/properties/'.$property->id, ['titulo' => 'Changed'])
             ->assertStatus(200);
-        $this->deleteJson('/api/properties/' . $property->id)->assertStatus(200);
+        $this->deleteJson('/api/properties/'.$property->id)->assertStatus(200);
     }
 
     public function test_property_tokens_route()
@@ -88,7 +95,7 @@ class ApiRoutesTest extends TestCase
             'data_tokenizacao' => now(),
             'user_id' => 1,
         ]);
-        $this->getJson('/api/properties/' . $property->id . '/tokens')
+        $this->getJson('/api/properties/'.$property->id.'/tokens')
             ->assertStatus(200);
     }
 
@@ -126,10 +133,10 @@ class ApiRoutesTest extends TestCase
         $investor = Investor::factory()->create();
 
         $this->getJson('/api/investors')->assertStatus(200);
-        $this->getJson('/api/investors/' . $investor->id)->assertStatus(200);
-        $this->putJson('/api/investors/' . $investor->id, ['nome' => 'Changed'])
+        $this->getJson('/api/investors/'.$investor->id)->assertStatus(200);
+        $this->putJson('/api/investors/'.$investor->id, ['nome' => 'Changed'])
             ->assertStatus(200);
-        $this->deleteJson('/api/investors/' . $investor->id)->assertStatus(200);
+        $this->deleteJson('/api/investors/'.$investor->id)->assertStatus(200);
     }
 
     public function test_transacao_financeira_resource_routes()
@@ -138,9 +145,9 @@ class ApiRoutesTest extends TestCase
         $transacao = \App\Models\TransacaoFinanceira::factory()->create();
 
         $this->getJson('/api/transacoes-financeiras')->assertStatus(200);
-        $this->getJson('/api/transacoes-financeiras/' . $transacao->id)->assertStatus(200);
-        $this->putJson('/api/transacoes-financeiras/' . $transacao->id, ['valor' => 50])
+        $this->getJson('/api/transacoes-financeiras/'.$transacao->id)->assertStatus(200);
+        $this->putJson('/api/transacoes-financeiras/'.$transacao->id, ['valor' => 50])
             ->assertStatus(200);
-        $this->deleteJson('/api/transacoes-financeiras/' . $transacao->id)->assertStatus(200);
+        $this->deleteJson('/api/transacoes-financeiras/'.$transacao->id)->assertStatus(200);
     }
 }
