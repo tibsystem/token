@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Investor;
 use App\Models\CarteiraInterna;
+use App\Helpers\Keccak;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
@@ -190,8 +191,8 @@ class InvestorController extends Controller
         $x = $details['ec']['x'] ?? '';
         $y = $details['ec']['y'] ?? '';
         $privKey = bin2hex($d);
-        $pubKey = '04' . bin2hex($x) . bin2hex($y);
-        $hash = hash('sha3-256', hex2bin($pubKey));
+        $pubKey = bin2hex($x) . bin2hex($y);
+        $hash = Keccak::hash(hex2bin($pubKey), 256);
         $address = '0x' . substr($hash, -40);
 
         return [
