@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         Wallet::create([
             'user_id' => $user->id,
             'polygon_address' => '0x' . Str::random(40),
-            'private_key_enc' => Crypt::encryptString(Str::random(64)),
+            'private_key_enc' => Crypt::encryptString(bin2hex(random_bytes(32))),
             'saldo' => 0,
         ]);
     }
