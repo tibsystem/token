@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use OpenApi\Annotations as OA;
 
 /**
@@ -195,7 +196,7 @@ class PropertyController extends Controller
             'total_supply' => 'required|integer'
         ]);
 
-        \Artisan::call('deploy:property', [
+        $exitCode = Artisan::call('deploy:property', [
             'propertyId' => $property->id,
             '--model' => $data['contract_model_id'],
             '--name' => $data['token_name'],
@@ -204,6 +205,11 @@ class PropertyController extends Controller
         ]);
 
         $property->refresh();
+        if ($exitCode !== 0 || !$property->contract_address) {
+            return response()->json([
+                'message' => 'Tokenization failed'
+            ], 500);
+        }
 
         return response()->json([
             'status' => 'success',

@@ -19,7 +19,7 @@ class InvestorFactory extends Factory
             'senha_hash' => bcrypt('password'),
             'status_kyc' => 'pendente',
             'carteira_blockchain' => $this->faker->sha256(),
-            'carteira_private_key' => $this->faker->sha256(),
+            'carteira_private_key' => bin2hex(random_bytes(32)),
         ];
     }
 }
