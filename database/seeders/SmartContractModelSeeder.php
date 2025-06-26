@@ -15,6 +15,7 @@ class SmartContractModelSeeder extends Seeder
             'description' => 'Mints tokens representing fractional ownership of a property and allows the owner to offer a future buyback at a specified price.',
             'version' => '0.8.20',
             'solidity_code' => <<<'SOL'
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 contract FractionalPropertyToken {
