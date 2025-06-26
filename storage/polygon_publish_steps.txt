@@ -1,0 +1,16 @@
+Passo a passo para verificar e publicar o contrato FractionalPropertyToken na PolygonScan:
+
+1. Compile o contrato usando a versão do Solidity 0.8.20. Exemplo usando Hardhat ou outro framework:
+   - configure no arquivo de configuração a versão do compilador `0.8.20`.
+   - execute `npx hardhat compile` para gerar o bytecode.
+2. Implante o contrato na rede Polygon (Mumbai ou Mainnet) fornecendo os parâmetros do construtor:
+   - _name: nome do token (ex.: "Imovel Tokenizado A")
+   - _symbol: símbolo do token (ex.: "IMVA")
+   - _supply: quantidade total de tokens (em unidades inteiras).
+3. Anote o endereço do contrato implantado.
+4. Acesse https://polygonscan.com/ (ou mumbai.polygonscan.com/ para testes) e navegue até **Verify & Publish Contract**.
+5. Insira o endereço do contrato, selecione `Solidity (Single file)` e a versão do compilador `0.8.20` com o parâmetro de otimização utilizado na compilação.
+6. Cole o conteúdo completo do arquivo `contracts/FractionalPropertyToken.sol` no campo de código fonte.
+7. Informe os parâmetros do construtor nos campos apropriados conforme usados na implantação.
+8. Envie o formulário para que o PolygonScan verifique e publique o código.
+9. Após a verificação, a página do contrato exibirá o código fonte e permitirá interações via interface do PolygonScan.
