@@ -72,3 +72,13 @@ Esta aplicação utiliza o pacote `l5-swagger` para gerar documentação no padr
 1. Instale as dependências do PHP com Composer.
 2. Execute `php artisan l5-swagger:generate` para gerar os arquivos de documentação.
 3. A interface poderá ser acessada em `/api/documentation` após iniciar o servidor.
+
+## Meta-transaction Relayer
+
+Para que os investidores possam transferir tokens sem pagar gás, utilize o script `relay_meta_transfer.js`. Ele assina a intenção com a chave do investidor e envia a transação usando a carteira do proprietário.
+
+```
+node scripts/relay_meta_transfer.js <enderecoContrato> <caminhoABI> <chaveInvestidor> <chaveRelayer> <destino> <quantidade>
+```
+
+A variável de ambiente `POLYGON_RPC_URL` deve apontar para o nó da rede.
