@@ -10,6 +10,10 @@ contract FractionalPropertyToken {
     uint256 public buybackPrice;
     bool public buybackEnabled;
 
+    mapping(address => uint256) public nonces;
+
+    event MetaTransfer(address indexed relayer, address indexed from, address indexed to, uint256 value);
+
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
 
@@ -58,6 +62,36 @@ contract FractionalPropertyToken {
         balanceOf[to] += value;
         emit Transfer(from, to, value);
         emit Approval(from, msg.sender, allowance[from][msg.sender]);
+        return true;
+    }
+
+    function metaTransfer(
+        address from,
+        address to,
+        uint256 value,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public returns (bool) {
+        require(to != address(0), "invalid to");
+
+        bytes32 messageHash = keccak256(
+            abi.encodePacked(address(this), from, to, value, nonces[from])
+        );
+        bytes32 ethSignedMessageHash = keccak256(
+            abi.encodePacked("\x19Ethereum Signed Message:\n32", messageHash)
+        );
+        address signer = ecrecover(ethSignedMessageHash, v, r, s);
+        require(signer == from, "invalid signature");
+
+        require(balanceOf[from] >= value, "balance too low");
+
+        nonces[from] += 1;
+
+        balanceOf[from] -= value;
+        balanceOf[to] += value;
+        emit Transfer(from, to, value);
+        emit MetaTransfer(msg.sender, from, to, value);
         return true;
     }
 
