@@ -8,6 +8,8 @@ use App\Models\TransacaoFinanceira;
 use App\Models\CarteiraInterna;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+use Symfony\Component\Process\Process;
 use App\Helpers\LogTransacaoHelper;
 use App\Models\Property;
 use OpenApi\Annotations as OA;
@@ -104,6 +106,62 @@ class InvestmentController extends Controller
             auth('investor')->user(),
             $data['id_imovel']
         );
+
+        $property = $investment->property;
+        $investor = $investment->investor;
+        $txHash = null;
+        if (
+            $property &&
+            $property->contract_address &&
+            $property->contract_abi &&
+            $property->user &&
+            $property->user->wallet
+        ) {
+            try {
+                $privKey = Crypt::decryptString($property->user->wallet->private_key_enc);
+
+                $abiPath = storage_path('app/' . uniqid('abi_') . '.json');
+                file_put_contents($abiPath, $property->contract_abi);
+
+                $process = new Process([
+                    'node', base_path('scripts/transfer_token.js'),
+                    $property->contract_address,
+                    $abiPath,
+                    $privKey,
+                    $investor->carteira_blockchain,
+                    $investment->qtd_tokens,
+                ]);
+                $process->run();
+                if ($process->isSuccessful()) {
+                    $out = json_decode($process->getOutput(), true);
+                    $txHash = $out['txHash'] ?? null;
+                } else {
+                    LogTransacaoHelper::registrar(
+                        'purchase_transfer_error',
+                        ['error' => $process->getErrorOutput()],
+                        auth('investor')->user(),
+                        $property->id
+                    );
+                }
+                @unlink($abiPath);
+            } catch (\Exception $e) {
+                LogTransacaoHelper::registrar(
+                    'purchase_transfer_error',
+                    ['error' => $e->getMessage()],
+                    auth('investor')->user(),
+                    $property->id
+                );
+            }
+        }
+
+        if ($txHash) {
+            LogTransacaoHelper::registrar(
+                'purchase_transfer',
+                ['txHash' => $txHash, 'investment_id' => $investment->id],
+                auth('investor')->user(),
+                $property->id
+            );
+        }
 
         return response()->json($investment);
     }

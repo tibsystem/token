@@ -82,3 +82,11 @@ node scripts/relay_meta_transfer.js <enderecoContrato> <caminhoABI> <chaveInvest
 ```
 
 A variável de ambiente `POLYGON_RPC_URL` deve apontar para o nó da rede.
+
+## Blockchain Purchase Flow
+
+Quando um investidor realiza a rota `api/investments/purchase`, caso o imóvel
+esteja tokenizado, os tokens são automaticamente transferidos na blockchain
+utilizando a carteira do proprietário do contrato. O backend executa o script
+`transfer_token.js` para mover os tokens do owner para o endereço do
+investidor e registra o hash da transação nos logs de transações.
