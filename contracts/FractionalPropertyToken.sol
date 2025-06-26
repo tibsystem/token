@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 contract FractionalPropertyToken {
     string public name;
     string public symbol;
-    uint8 public decimals = 18;
+    uint8 public constant decimals = 18;
     uint256 public totalSupply;
     address public owner;
     uint256 public buybackPrice;
@@ -25,8 +25,8 @@ contract FractionalPropertyToken {
         name = _name;
         symbol = _symbol;
         owner = msg.sender;
-        totalSupply = _supply;
-        balanceOf[msg.sender] = _supply;
+        totalSupply = _supply * (10 ** decimals);
+        balanceOf[msg.sender] = totalSupply;
     }
 
     function transfer(address to, uint256 value) public returns (bool) {
