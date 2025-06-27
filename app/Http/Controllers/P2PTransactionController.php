@@ -11,6 +11,7 @@ use App\Models\CarteiraInterna;
 use App\Helpers\LogTransacaoHelper;
 use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Http;
 use OpenApi\Annotations as OA;
 
 /**
@@ -144,14 +145,43 @@ class P2PTransactionController extends Controller
                 $abiPath = storage_path('app/'.uniqid('abi_').'.json');
                 file_put_contents($abiPath, $property->contract_abi);
 
-                $process = new Process([
-                    'node', base_path('scripts/transfer_token.js'),
-                    $property->contract_address,
-                    $abiPath,
-                    $privKey,
-                    $buyer->carteira_blockchain,
-                    $listing->qtd_tokens
-                ]);
+                $useRelayer = false;
+                $buyerBalance = 0;
+                if ($buyer->carteira_blockchain) {
+                    $resp = Http::get('https://api.polygonscan.com/api', [
+                        'module' => 'account',
+                        'action' => 'balance',
+                        'address' => $buyer->carteira_blockchain,
+                        'tag' => 'latest',
+                        'apikey' => config('services.polygonscan.key'),
+                    ]);
+                    if ($resp->successful()) {
+                        $wei = $resp->json('result');
+                        $buyerBalance = (float) $wei / 1e18;
+                    }
+                }
+
+                if ($buyerBalance <= 0 && $property->user && $property->user->wallet) {
+                    $relayerKey = Crypt::decryptString($property->user->wallet->private_key_enc);
+                    $process = new Process([
+                        'node', base_path('scripts/relay_meta_transfer.js'),
+                        $property->contract_address,
+                        $abiPath,
+                        $privKey,
+                        $relayerKey,
+                        $buyer->carteira_blockchain,
+                        $listing->qtd_tokens,
+                    ]);
+                } else {
+                    $process = new Process([
+                        'node', base_path('scripts/transfer_token.js'),
+                        $property->contract_address,
+                        $abiPath,
+                        $privKey,
+                        $buyer->carteira_blockchain,
+                        $listing->qtd_tokens,
+                    ]);
+                }
                 $process->run();
                 if ($process->isSuccessful()) {
                     $out = json_decode($process->getOutput(), true);

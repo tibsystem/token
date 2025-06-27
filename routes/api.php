@@ -88,6 +88,8 @@ Route::middleware(['auth:api','isAdmin'])->group(function() {
     Route::post('admin/properties', [PropertyController::class, 'store']);
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::post('properties/{id}/tokenize', [PropertyController::class, 'tokenize']);
+    Route::get('admin/properties', [PropertyController::class, 'index']);
+
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('admin/imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
     Route::get('admin/transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
