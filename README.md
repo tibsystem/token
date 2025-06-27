@@ -97,3 +97,6 @@ A rota `api/p2p/transactions` verifica o saldo em MATIC da carteira do
 comprador. Se o saldo for zero, a transferência de tokens do vendedor para o
 comprador é feita usando meta‑transação, assinada pelo vendedor e enviada pela
 carteira do proprietário do contrato por meio do script `relay_meta_transfer.js`.
+Para utilizar o relayer, os imóveis devem ser implantados com um contrato que
+inclua as funções `metaTransfer` e `nonces`. Contratos implantados antes dessa
+mudança precisam ser atualizados ou não funcionarão com o relayer.
