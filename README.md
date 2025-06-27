@@ -90,3 +90,10 @@ esteja tokenizado, os tokens são automaticamente transferidos na blockchain
 utilizando a carteira do proprietário do contrato. O backend executa o script
 `transfer_token.js` para mover os tokens do owner para o endereço do
 investidor e registra o hash da transação nos logs de transações.
+
+## P2P Transaction Relayer
+
+A rota `api/p2p/transactions` verifica o saldo em MATIC da carteira do
+comprador. Se o saldo for zero, a transferência de tokens do vendedor para o
+comprador é feita usando meta‑transação, assinada pelo vendedor e enviada pela
+carteira do proprietário do contrato por meio do script `relay_meta_transfer.js`.
