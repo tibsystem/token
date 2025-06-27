@@ -89,4 +89,6 @@ Quando um investidor realiza a rota `api/investments/purchase`, caso o imóvel
 esteja tokenizado, os tokens são automaticamente transferidos na blockchain
 utilizando a carteira do proprietário do contrato. O backend executa o script
 `transfer_token.js` para mover os tokens do owner para o endereço do
-investidor e registra o hash da transação nos logs de transações.
+investidor e registra o hash da transação nos logs de transações. A
+quantidade informada na compra é convertida para base 18 antes de enviar a
+transação para a rede.
