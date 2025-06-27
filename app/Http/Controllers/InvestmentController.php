@@ -123,13 +123,14 @@ class InvestmentController extends Controller
                 $abiPath = storage_path('app/' . uniqid('abi_') . '.json');
                 file_put_contents($abiPath, $property->contract_abi);
 
+                $tokenAmount = bcmul((string) $investment->qtd_tokens, '1000000000000000000');
                 $process = new Process([
                     'node', base_path('scripts/transfer_token.js'),
                     $property->contract_address,
                     $abiPath,
                     $privKey,
                     $investor->carteira_blockchain,
-                    $investment->qtd_tokens,
+                    $tokenAmount,
                 ]);
                 $process->run();
                 if ($process->isSuccessful()) {

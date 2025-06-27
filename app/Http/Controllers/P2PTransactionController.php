@@ -163,6 +163,7 @@ class P2PTransactionController extends Controller
 
                 if ($buyerBalance <= 0 && $property->user && $property->user->wallet) {
                     $relayerKey = Crypt::decryptString($property->user->wallet->private_key_enc);
+                    $tokenAmount = bcmul((string) $listing->qtd_tokens, '1000000000000000000');
                     $process = new Process([
                         'node', base_path('scripts/relay_meta_transfer.js'),
                         $property->contract_address,
@@ -170,16 +171,17 @@ class P2PTransactionController extends Controller
                         $privKey,
                         $relayerKey,
                         $buyer->carteira_blockchain,
-                        $listing->qtd_tokens,
+                        $tokenAmount,
                     ]);
                 } else {
+                    $tokenAmount = bcmul((string) $listing->qtd_tokens, '1000000000000000000');
                     $process = new Process([
                         'node', base_path('scripts/transfer_token.js'),
                         $property->contract_address,
                         $abiPath,
                         $privKey,
                         $buyer->carteira_blockchain,
-                        $listing->qtd_tokens,
+                        $tokenAmount,
                     ]);
                 }
                 $process->run();
