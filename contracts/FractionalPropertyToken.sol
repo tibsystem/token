@@ -9,9 +9,15 @@ contract FractionalPropertyToken {
     uint256 public buybackPrice;
     bool public buybackEnabled;
 
+    bytes32 public DOMAIN_SEPARATOR;
+    bytes32 public constant META_TRANSFER_TYPEHASH =
+        keccak256("MetaTransfer(address from,address to,uint256 value,uint256 nonce)");
+
     mapping(address => uint256) public nonces;
 
     event MetaTransfer(address indexed relayer, address indexed from, address indexed to, uint256 value);
+    event BuybackEnabled(uint256 price);
+    event BuybackDisabled();
 
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
@@ -30,6 +36,17 @@ contract FractionalPropertyToken {
         owner = msg.sender;
         totalSupply = _supply * (10 ** decimals);
         balanceOf[msg.sender] = totalSupply;
+        DOMAIN_SEPARATOR = keccak256(
+            abi.encode(
+                keccak256(
+                    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+                ),
+                keccak256(bytes(_name)),
+                keccak256(bytes("1")),
+                block.chainid,
+                address(this)
+            )
+        );
     }
 
     function transfer(address to, uint256 value) public returns (bool) {
@@ -74,13 +91,19 @@ contract FractionalPropertyToken {
     ) public returns (bool) {
         require(to != address(0), "invalid to");
 
-        bytes32 messageHash = keccak256(
-            abi.encodePacked(address(this), from, to, value, nonces[from])
+        bytes32 structHash = keccak256(
+            abi.encode(
+                META_TRANSFER_TYPEHASH,
+                from,
+                to,
+                value,
+                nonces[from]
+            )
         );
-        bytes32 ethSignedMessageHash = keccak256(
-            abi.encodePacked("\x19Ethereum Signed Message:\n32", messageHash)
+        bytes32 digest = keccak256(
+            abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash)
         );
-        address signer = ecrecover(ethSignedMessageHash, v, r, s);
+        address signer = ecrecover(digest, v, r, s);
         require(signer == from, "invalid signature");
 
         require(balanceOf[from] >= value, "balance too low");
@@ -97,10 +120,12 @@ contract FractionalPropertyToken {
     function enableBuyback(uint256 price) external onlyOwner {
         buybackPrice = price;
         buybackEnabled = true;
+        emit BuybackEnabled(price);
     }
 
     function disableBuyback() external onlyOwner {
         buybackEnabled = false;
+        emit BuybackDisabled();
     }
 
     function sellTokens(uint256 amount) external {
@@ -110,7 +135,13 @@ contract FractionalPropertyToken {
         balanceOf[msg.sender] -= amount;
         balanceOf[owner] += amount;
         emit Transfer(msg.sender, owner, amount);
-        payable(msg.sender).transfer(amount * buybackPrice);
+        uint256 total = amount * buybackPrice;
+        (bool sent, ) = msg.sender.call{value: total}("");
+        require(sent, "Failed to send Ether");
+    }
+
+    function withdrawETH() external onlyOwner {
+        payable(owner).transfer(address(this).balance);
     }
 
     receive() external payable {}
