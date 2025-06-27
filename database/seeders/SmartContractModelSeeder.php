@@ -20,11 +20,14 @@ pragma solidity ^0.8.20;
 contract FractionalPropertyToken {
     string public name;
     string public symbol;
-    uint8  public constant decimals = 18;
+    uint8 public constant decimals = 18;
     uint256 public totalSupply;
     address public owner;
     uint256 public buybackPrice;
     bool public buybackEnabled;
+
+    mapping(address => uint256) public nonces;
+    event MetaTransfer(address indexed relayer, address indexed from, address indexed to, uint256 value);
 
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
@@ -32,7 +35,10 @@ contract FractionalPropertyToken {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
-    modifier onlyOwner() { require(msg.sender == owner, "Not owner"); _; }
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
 
     constructor(string memory _name, string memory _symbol, uint256 _supply) {
         name = _name;
@@ -54,6 +60,7 @@ contract FractionalPropertyToken {
 
     function approve(address spender, uint256 value) public returns (bool) {
         require(spender != address(0), "invalid spender");
+
         allowance[msg.sender][spender] = value;
         emit Approval(msg.sender, spender, value);
         return true;
@@ -73,14 +80,49 @@ contract FractionalPropertyToken {
         return true;
     }
 
+    function metaTransfer(
+        address from,
+        address to,
+        uint256 value,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public returns (bool) {
+        require(to != address(0), "invalid to");
+
+        bytes32 messageHash = keccak256(
+            abi.encodePacked(address(this), from, to, value, nonces[from])
+        );
+        bytes32 ethSignedMessageHash = keccak256(
+            abi.encodePacked("\x19Ethereum Signed Message:\n32", messageHash)
+        );
+        address signer = ecrecover(ethSignedMessageHash, v, r, s);
+        require(signer == from, "invalid signature");
+
+        require(balanceOf[from] >= value, "balance too low");
+
+        nonces[from] += 1;
+
+        balanceOf[from] -= value;
+        balanceOf[to] += value;
+        emit Transfer(from, to, value);
+        emit MetaTransfer(msg.sender, from, to, value);
+        return true;
+    }
+
     function enableBuyback(uint256 price) external onlyOwner {
         buybackPrice = price;
         buybackEnabled = true;
     }
-    function disableBuyback() external onlyOwner { buybackEnabled = false; }
+
+    function disableBuyback() external onlyOwner {
+        buybackEnabled = false;
+    }
+
     function sellTokens(uint256 amount) external {
         require(buybackEnabled, "buyback not enabled");
         require(balanceOf[msg.sender] >= amount, "balance too low");
+
         balanceOf[msg.sender] -= amount;
         balanceOf[owner] += amount;
         emit Transfer(msg.sender, owner, amount);
