@@ -68,7 +68,7 @@ class P2PListingController extends Controller
         $investment = Investment::where('id_investidor', $data['vendedor_id'])
             ->where('id_imovel', $data['id_imovel'])
             ->first();
-
+        \Log::info('Investment:', ['investment' => $investment]);
         if (!$investment || $investment->qtd_tokens < $data['qtd_tokens']) {
             return response()->json(['message' => 'Tokens insuficientes'], 400);
         }
