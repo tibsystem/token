@@ -145,7 +145,6 @@ class P2PTransactionController extends Controller
                 $abiPath = storage_path('app/'.uniqid('abi_').'.json');
                 file_put_contents($abiPath, $property->contract_abi);
 
-                $useRelayer = false;
                 $buyerBalance = 0;
                 if ($buyer->carteira_blockchain) {
                     $resp = Http::get('https://api.polygonscan.com/api', [
