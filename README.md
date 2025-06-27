@@ -89,12 +89,9 @@ Quando um investidor realiza a rota `api/investments/purchase`, caso o imóvel
 esteja tokenizado, os tokens são automaticamente transferidos na blockchain
 utilizando a carteira do proprietário do contrato. O backend executa o script
 `transfer_token.js` para mover os tokens do owner para o endereço do
-<<<<<<< HEAD
 investidor e registra o hash da transação nos logs de transações. A
 quantidade informada na compra é convertida para base 18 antes de enviar a
 transação para a rede.
-=======
-investidor e registra o hash da transação nos logs de transações.
 
 ## P2P Transaction Relayer
 
@@ -102,4 +99,6 @@ A rota `api/p2p/transactions` verifica o saldo em MATIC da carteira do
 comprador. Se o saldo for zero, a transferência de tokens do vendedor para o
 comprador é feita usando meta‑transação, assinada pelo vendedor e enviada pela
 carteira do proprietário do contrato por meio do script `relay_meta_transfer.js`.
->>>>>>> origin/main
+Para utilizar o relayer, os imóveis devem ser implantados com um contrato que
+inclua as funções `metaTransfer` e `nonces`. Contratos implantados antes dessa
+mudança precisam ser atualizados ou não funcionarão com o relayer.
