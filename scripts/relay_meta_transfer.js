@@ -17,12 +17,27 @@ async function main() {
   const contract = new ethers.Contract(contractAddress, abi, provider);
 
   const nonce = await contract.nonces(investorWallet.address);
-  const messageHash = ethers.solidityPackedKeccak256(
-    ['address', 'address', 'address', 'uint256', 'uint256'],
-    [contractAddress, investorWallet.address, to, amount, nonce]
-  );
-
-  const signature = await investorWallet.signMessage(ethers.getBytes(messageHash));
+  const domain = {
+    name: await contract.name(),
+    version: '1',
+    chainId: (await provider.getNetwork()).chainId,
+    verifyingContract: contractAddress,
+  };
+  const types = {
+    MetaTransfer: [
+      { name: 'from', type: 'address' },
+      { name: 'to', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'nonce', type: 'uint256' },
+    ],
+  };
+  const message = {
+    from: investorWallet.address,
+    to,
+    value: BigInt(amount),
+    nonce,
+  };
+  const signature = await investorWallet.signTypedData(domain, types, message);
   const sig = ethers.Signature.from(signature);
 
   const relayerContract = contract.connect(relayerWallet);
