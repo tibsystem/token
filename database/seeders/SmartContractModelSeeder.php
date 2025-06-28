@@ -144,6 +144,31 @@ contract FractionalPropertyToken {
         emit BuybackDisabled();
     }
 
+    /**
+     * @dev Admin can forcefully buy back tokens from a list of investors.
+     *      Payments are handled off-chain. This function only moves tokens
+     *      back to the contract owner and emits standard Transfer events.
+     * @param investors Array of investor addresses.
+     * @param amounts   Corresponding token amounts to be transferred.
+     */
+    function adminBuyback(
+        address[] calldata investors,
+        uint256[] calldata amounts
+    ) external onlyOwner {
+        require(investors.length == amounts.length, "length mismatch");
+
+        for (uint256 i = 0; i < investors.length; i++) {
+            address investor = investors[i];
+            uint256 amount = amounts[i];
+            require(investor != address(0), "invalid investor");
+            require(balanceOf[investor] >= amount, "balance too low");
+
+            balanceOf[investor] -= amount;
+            balanceOf[owner] += amount;
+            emit Transfer(investor, owner, amount);
+        }
+    }
+
     function sellTokens(uint256 amount) external {
         require(buybackEnabled, "buyback not enabled");
         require(balanceOf[msg.sender] >= amount, "balance too low");
