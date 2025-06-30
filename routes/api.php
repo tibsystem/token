@@ -119,6 +119,6 @@ Route::middleware(['auth:investor'])->group(function () {
     Route::post('p2p/transactions', [P2PTransactionController::class, 'store']);
     Route::resource('support-tickets', SupportTicketController::class);
     Route::get('transacoes-financeiras-lista/{id}', [TransacaoFinanceiraController::class, 'showinvest']);
-    Route::resource('transacoes-financeiras', TransacaoFinanceiraController::class);
+    Route::get('transacoes-financeiras', [TransacaoFinanceiraController::class, 'index']);
     // ...outros endpoints
 });
