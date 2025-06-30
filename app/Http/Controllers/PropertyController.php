@@ -155,6 +155,13 @@ class PropertyController extends Controller
             $data + ['qtd_tokens_original' => $request->qtd_tokens]
         );
 
+        // Cria carteira off-chain para o imóvel recém cadastrado
+        \App\Models\PropertyWallet::create([
+            'property_id' => $property->id,
+            'saldo_disponivel' => 0,
+            'saldo_bloqueado' => 0,
+        ]);
+
         return response()->json($property, 201);
     }
 
