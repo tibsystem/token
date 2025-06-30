@@ -92,6 +92,29 @@ class InvestmentController extends Controller
                         $carteira->saldo_disponivel -= $valorTotal;
                         $carteira->save();
                     }
+
+                    $settings = \App\Models\PlatformSetting::first();
+                    $percent = $settings?->taxa_compra_token ?? 0;
+                    $taxa = $valorTotal * ($percent / 100);
+
+                    $platformWallet = \App\Models\PlatformWallet::first();
+                    if ($platformWallet) {
+                        $platformWallet->saldo_disponivel += $taxa;
+                        $platformWallet->save();
+                    }
+
+                    $propertyWallet = \App\Models\PropertyWallet::where('property_id', $data['id_imovel'])->first();
+                    if ($propertyWallet) {
+                        $propertyWallet->saldo_disponivel += $valorTotal - $taxa;
+                        $propertyWallet->save();
+                    }
+
+                    \App\Helpers\LogTransacaoHelper::registrar(
+                        'taxa_compra_token',
+                        ['taxa' => $taxa, 'investment_id' => $investment->id],
+                        auth('investor')->user(),
+                        $data['id_imovel']
+                    );
                 }
 
                 return $investment;

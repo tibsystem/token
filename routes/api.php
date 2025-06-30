@@ -13,6 +13,7 @@ use App\Http\Controllers\TransacaoFinanceiraController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\BuybackController;
+use App\Http\Controllers\PlatformSettingsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -90,6 +91,10 @@ Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('admin/imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
     Route::post('admin/imoveis/{id}/buyback', [BuybackController::class, 'buyback']);
+
+    // Configurações da plataforma
+    Route::get('platform-settings', [PlatformSettingsController::class, 'show']);
+    Route::put('platform-settings', [PlatformSettingsController::class, 'update']);
 });
 
 // Funcionalidades disponíveis para investidores autenticados
