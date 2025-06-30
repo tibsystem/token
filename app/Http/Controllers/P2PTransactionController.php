@@ -115,10 +115,27 @@ class P2PTransactionController extends Controller
         $invCompr->qtd_tokens += $listing->qtd_tokens;
         $invCompr->save();
 
+        $settings = \App\Models\PlatformSetting::first();
+        $percent = $settings?->taxa_negociacao_p2p ?? 0;
+        $taxa = $total * ($percent / 100);
+
         $carteiraComprador->saldo_disponivel -= $total;
-        $carteiraVendedor->saldo_disponivel += $total;
+        $carteiraVendedor->saldo_disponivel += $total - $taxa;
         $carteiraComprador->save();
         $carteiraVendedor->save();
+
+        $platformWallet = \App\Models\PlatformWallet::first();
+        if ($platformWallet) {
+            $platformWallet->saldo_disponivel += $taxa;
+            $platformWallet->save();
+        }
+
+        \App\Helpers\LogTransacaoHelper::registrar(
+            'taxa_negociacao_p2p',
+            ['taxa' => $taxa, 'listing_id' => $listing->id],
+            auth('investor')->user(),
+            $listing->id_imovel
+        );
 
         $listing->status = 'concluida';
         $listing->save();
