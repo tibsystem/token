@@ -119,8 +119,8 @@ class P2PTransactionController extends Controller
         $percent = $settings?->taxa_negociacao_p2p ?? 0;
         $taxa = $total * ($percent / 100);
 
-        $carteiraComprador->saldo_disponivel -= $total;
-        $carteiraVendedor->saldo_disponivel += $total - $taxa;
+        $carteiraComprador->saldo_disponivel -= $total - $taxa;
+        $carteiraVendedor->saldo_disponivel += $total;
         $carteiraComprador->save();
         $carteiraVendedor->save();
 

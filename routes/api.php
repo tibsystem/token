@@ -65,7 +65,7 @@ Route::middleware(['auth:investor'])->group(function () {
      * )
      */
     Route::get('/imoveis', [PropertyController::class, 'index']);
-
+    Route::get('platform-settings', [PlatformSettingsController::class, 'show']);
     /**
      * @OA\Get(
      *     path="/api/p2p/ofertas",
@@ -97,7 +97,7 @@ Route::middleware(['auth:api','isAdmin'])->group(function() {
     Route::post('admin/imoveis/{id}/buyback', [BuybackController::class, 'buyback']);
 
     // Configurações da plataforma
-    Route::get('platform-settings', [PlatformSettingsController::class, 'show']);
+   
     Route::put('platform-settings', [PlatformSettingsController::class, 'update']);
     Route::get('admin/transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
     // Route::get('admin/properties', [PropertyController::class, 'index']);

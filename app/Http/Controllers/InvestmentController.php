@@ -72,10 +72,20 @@ class InvestmentController extends Controller
                     $property->save();
                 }
 
+          
+
                 $investment = Investment::create($data);
 
+                    $settings = \App\Models\PlatformSetting::first();
+                    $percent = $settings?->taxa_compra_token ?? 0;
+
                 if ($data['origem'] === 'plataforma') {
-                    $valorTotal = $data['qtd_tokens'] * $data['valor_unitario'];
+                    $valorTotal = ($data['qtd_tokens'] * $data['valor_unitario']) + (($data['qtd_tokens'] * $data['valor_unitario'])*($percent / 100));
+                    $valorTotalSem = ($data['qtd_tokens'] * $data['valor_unitario']);
+
+
+
+                    $taxa = $valorTotalSem * ($percent / 100);
 
                     TransacaoFinanceira::create([
                         'id' => (string) Str::uuid(),
@@ -93,9 +103,7 @@ class InvestmentController extends Controller
                         $carteira->save();
                     }
 
-                    $settings = \App\Models\PlatformSetting::first();
-                    $percent = $settings?->taxa_compra_token ?? 0;
-                    $taxa = $valorTotal * ($percent / 100);
+                   
 
                     $platformWallet = \App\Models\PlatformWallet::first();
                     if ($platformWallet) {
@@ -105,7 +113,7 @@ class InvestmentController extends Controller
 
                     $propertyWallet = \App\Models\PropertyWallet::where('property_id', $data['id_imovel'])->first();
                     if ($propertyWallet) {
-                        $propertyWallet->saldo_disponivel += $valorTotal - $taxa;
+                        $propertyWallet->saldo_disponivel += $valorTotalSem - $taxa;
                         $propertyWallet->save();
                     }
 
