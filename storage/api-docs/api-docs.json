@@ -180,6 +180,52 @@
                 }
             }
         },
+        "/api/admin/imoveis/{id}/buyback": {
+            "post": {
+                "tags": [
+                    "Buyback"
+                ],
+                "summary": "Recomprar tokens dos investidores",
+                "description": "Processar recompra de tokens dos investidores.",
+                "operationId": "312f432f5281404262fb6db9b2d57419",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "valor_pago": {
+                                        "description": "Valor a ser pago por token",
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/investments/purchase": {
             "post": {
                 "tags": [
@@ -255,7 +301,7 @@
                 ],
                 "summary": "Histórico de investimentos",
                 "description": "Histórico de investimentos do usuário autenticado.",
-                "operationId": "3147a51d495a29b74b46d8abd93edbea",
+                "operationId": "e4914f0002d40b85e4142c31370ed60f",
                 "responses": {
                     "200": {
                         "description": "Sucesso"
@@ -644,6 +690,31 @@
                         "sanctum": []
                     }
                 ]
+            }
+        },
+        "/api/polygon/balance/{address}": {
+            "get": {
+                "tags": [
+                    "Polygon"
+                ],
+                "summary": "Consultar saldo da carteira Polygon",
+                "description": "Retorna o saldo de uma carteira Polygon.",
+                "operationId": "15854c96050e3785acfb4c6b3e64b583",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso"
+                    }
+                }
             }
         },
         "/api/properties": {
@@ -1399,6 +1470,10 @@
             "description": "Autenticação de usuários"
         },
         {
+            "name": "Buyback",
+            "description": "Recompra administrativa de tokens"
+        },
+        {
             "name": "Investments",
             "description": "Operações de investimentos"
         },
@@ -1413,6 +1488,10 @@
         {
             "name": "P2P Transactions",
             "description": "Transações de compra e venda P2P"
+        },
+        {
+            "name": "Polygon",
+            "description": "Consultas à blockchain Polygon"
         },
         {
             "name": "Properties",
