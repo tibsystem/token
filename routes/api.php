@@ -88,6 +88,7 @@ Route::middleware(['auth:api','isAdmin'])->group(function() {
     Route::put('admin/investors/{id}', [InvestorController::class, 'update']);
     Route::delete('admin/investors/{id}', [InvestorController::class, 'destroy']);
     Route::post('admin/properties', [PropertyController::class, 'store']);
+    Route::get('admin/properties/{id}', [PropertyController::class, 'show']);
     Route::get('admin/properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::post('admin/properties/{id}/tokenize', [PropertyController::class, 'tokenize']);
     Route::get('admin/properties', [PropertyController::class, 'index']);
