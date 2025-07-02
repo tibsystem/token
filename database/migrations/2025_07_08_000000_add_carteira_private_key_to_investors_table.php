@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('investors', function (Blueprint $table) {
-            $table->string('carteira_private_key')->nullable();
+            $table->text('carteira_private_key')->nullable();
         });
     }
 
