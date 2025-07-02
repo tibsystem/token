@@ -64,6 +64,9 @@ Route::prefix('admin')->middleware(['auth:api', 'isAdmin'])->group(function () {
 
     // Perfil
     Route::get('user/profile', [UserController::class, 'profile']);
+
+    // Perfil e carteira
+    Route::get('wallet/{id}', [WalletController::class, 'show']);
 });
 
 // Rotas de investidor autenticado
