@@ -81,31 +81,30 @@ Route::middleware(['auth:investor'])->group(function () {
 
 
 // Rotas administrativas protegidas por auth:api e verificação de administrador
-Route::middleware(['auth:api','isAdmin'])->group(function() {
-    Route::get('admin/investments', [InvestmentController::class, 'index']);
-    Route::get('admin/investors', [InvestorController::class, 'index']);
-    Route::get('admin/investors/{id}', [InvestorController::class, 'show']);
-    Route::put('admin/investors/{id}', [InvestorController::class, 'update']);
-    Route::delete('admin/investors/{id}', [InvestorController::class, 'destroy']);
-    Route::post('admin/properties', [PropertyController::class, 'store']);
-    Route::get('admin/properties/{id}', [PropertyController::class, 'show']);
-    Route::get('admin/properties/{id}/tokens', [PropertyController::class, 'tokens']);
-    Route::post('admin/properties/{id}/tokenize', [PropertyController::class, 'tokenize']);
-    Route::get('admin/properties', [PropertyController::class, 'index']);
-
-    Route::get('admin/user/profile', [UserController::class, 'profile']);
-    Route::get('admin/imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
-    Route::post('admin/imoveis/{id}/buyback', [BuybackController::class, 'buyback']);
-
+Route::middleware(['auth:api','isAdmin'])->prefix("admin")->group(function() {
+    Route::get('investments', [InvestmentController::class, 'index']);
+    Route::get('investors', [InvestorController::class, 'index']);
+    Route::get('wallet/{id}', [WalletController::class, 'show']);
+    Route::get('investors/{id}', [InvestorController::class, 'show']);
+    Route::put('investors/{id}', [InvestorController::class, 'update']);
+    Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
+    Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
+    Route::post('properties', [PropertyController::class, 'store']);
+    Route::get('properties/{id}', [PropertyController::class, 'show']);
+    Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
+    Route::post('properties/{id}/tokenize', [PropertyController::class, 'tokenize']);
+    Route::get('properties', [PropertyController::class, 'index']);
+    Route::get('user/profile', [UserController::class, 'profile']);
+    Route::get('imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
+    Route::post('imoveis/{id}/buyback', [BuybackController::class, 'buyback']);
     // Configurações da plataforma
-   
-    Route::put('admin/platform-settings', [PlatformSettingsController::class, 'update']);
-    Route::get('admin/transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
-    // Route::get('admin/properties', [PropertyController::class, 'index']);
+    Route::put('platform-settings', [PlatformSettingsController::class, 'update']);
+    Route::get('transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
+    // Route::get('properties', [PropertyController::class, 'index']);
 });
 
 // Funcionalidades disponíveis para investidores autenticados
-Route::middleware(['auth:investor'])->group(function () {
+Route::middleware(['auth:investor'])->prefix("investor")->group(function () {
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('wallet/{id}', [WalletController::class, 'show']);
     Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
