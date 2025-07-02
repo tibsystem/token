@@ -28,100 +28,74 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Rotas públicas
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
-Route::post('/auth/investor-login', [AuthController::class, 'loginInvestidor']);
-
-Route::post('admin/investors', [InvestorController::class, 'store']);
+Route::post('auth/investor-login', [AuthController::class, 'loginInvestidor']);
 Route::get('polygon/balance/{address}', [PolygonController::class, 'balance']);
 
-// Rotas de acesso do investidor autenticado
-Route::middleware(['auth:investor'])->group(function () {
-    /**
-     * @OA\Get(
-     *     path="/api/me/investimentos",
-     *     tags={"Investments"},
-     *     security={{"sanctum":{}}},
-     *     summary="Listar investimentos do usuário autenticado",
-     *
-     *     @OA\Response(response=200, description="Sucesso")
-     * )
-     */
-    Route::get('/me/investimentos', function (Request $request) {
-        return $request->user()->investments;
-    });
+// Dados do usuário autenticado
+Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
-    /**
-     * @OA\Get(
-     *     path="/api/imoveis",
-     *     tags={"Properties"},
-     *     security={{"sanctum":{}}},
-     *     summary="Listar imóveis (atalho)",
-     *
-     *     @OA\Response(response=200, description="Sucesso")
-     * )
-     */
-    Route::get('/imoveis', [PropertyController::class, 'index']);
-    Route::get('platform-settings', [PlatformSettingsController::class, 'show']);
-    /**
-     * @OA\Get(
-     *     path="/api/p2p/ofertas",
-     *     tags={"P2P Listings"},
-     *     security={{"sanctum":{}}},
-     *     summary="Listar ofertas P2P (atalho)",
-     *
-     *     @OA\Response(response=200, description="Sucesso")
-     * )
-     */
-    Route::get('/p2p/ofertas', [P2PListingController::class, 'index']);
-});
-
-
-// Rotas administrativas protegidas por auth:api e verificação de administrador
-Route::middleware(['auth:api','isAdmin'])->prefix("admin")->group(function() {
-    Route::get('investments', [InvestmentController::class, 'index']);
+// Rotas de Admin (com prefixo e middleware)
+Route::prefix('admin')->middleware(['auth:api', 'isAdmin'])->group(function () {
+    // Investors
     Route::get('investors', [InvestorController::class, 'index']);
-    Route::get('wallet/{id}', [WalletController::class, 'show']);
+    Route::post('investors', [InvestorController::class, 'store']);
     Route::get('investors/{id}', [InvestorController::class, 'show']);
     Route::put('investors/{id}', [InvestorController::class, 'update']);
     Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
-    Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
+
+    // Properties
+    Route::get('properties', [PropertyController::class, 'index']);
     Route::post('properties', [PropertyController::class, 'store']);
     Route::get('properties/{id}', [PropertyController::class, 'show']);
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
     Route::post('properties/{id}/tokenize', [PropertyController::class, 'tokenize']);
-    Route::get('properties', [PropertyController::class, 'index']);
-    Route::get('user/profile', [UserController::class, 'profile']);
+
+    // Imóveis 
     Route::get('imoveis/{id}/financeiro', [PropertyFinanceController::class, 'report']);
     Route::post('imoveis/{id}/buyback', [BuybackController::class, 'buyback']);
-    // Configurações da plataforma
+
+    // Configurações e transações
     Route::put('platform-settings', [PlatformSettingsController::class, 'update']);
+    Route::get('platform-settings', [PlatformSettingsController::class, 'show']);
     Route::get('transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
-    // Route::get('properties', [PropertyController::class, 'index']);
+
+    // Perfil
+    Route::get('user/profile', [UserController::class, 'profile']);
 });
 
-// Funcionalidades disponíveis para investidores autenticados
-Route::middleware(['auth:investor'])->prefix("investor")->group(function () {
+// Rotas de investidor autenticado
+Route::prefix('investor')->middleware(['auth:investor'])->group(function () {
+    // Perfil e carteira
     Route::get('user/profile', [UserController::class, 'profile']);
     Route::get('wallet/{id}', [WalletController::class, 'show']);
     Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
     Route::post('wallet/withdraw', [WalletController::class, 'withdraw']);
+
+    // Investimentos
+    Route::get('investments/{id}', [InvestmentController::class, 'show']);
+    Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
+    Route::get('investments/history', [InvestmentController::class, 'history']);
+    Route::get('me/investimentos', fn (Request $request) => $request->user()->investments);
+
+    // Imóveis
     Route::get('properties', [PropertyController::class, 'index']);
     Route::get('properties/{id}', [PropertyController::class, 'show']);
     Route::get('properties/{id}/tokens', [PropertyController::class, 'tokens']);
-    Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
-    Route::get('investments/{id}', [InvestmentController::class, 'show']);
-    Route::get('investments/history', [InvestmentController::class, 'history']);
+
+    // P2P
     Route::get('p2p/listings', [P2PListingController::class, 'index']);
     Route::post('p2p/listings', [P2PListingController::class, 'store']);
     Route::delete('p2p/listings/{id}', [P2PListingController::class, 'destroy']);
     Route::get('p2p/transactions', [P2PTransactionController::class, 'index']);
     Route::post('p2p/transactions', [P2PTransactionController::class, 'store']);
+
+    // Suporte
     Route::resource('support-tickets', SupportTicketController::class);
-    Route::get('transacoes-financeiras-lista/{id}', [TransacaoFinanceiraController::class, 'showinvest']);
+
+    // Transações financeiras
     Route::get('transacoes-financeiras', [TransacaoFinanceiraController::class, 'index']);
-    // ...outros endpoints
+    Route::get('transacoes-financeiras-lista/{id}', [TransacaoFinanceiraController::class, 'showinvest']);
 });
