@@ -101,4 +101,9 @@ Route::prefix('investor')->middleware(['auth:investor'])->group(function () {
     // Transações financeiras
     Route::get('transacoes-financeiras', [TransacaoFinanceiraController::class, 'index']);
     Route::get('transacoes-financeiras-lista/{id}', [TransacaoFinanceiraController::class, 'showinvest']);
+
+    // Configurações e transações
+    Route::put('platform-settings', [PlatformSettingsController::class, 'update']);
+    Route::get('platform-settings', [PlatformSettingsController::class, 'show']);
+    Route::get('transacoes-financeiras', [TransacaoFinanceiraController::class, 'lista']);
 });
