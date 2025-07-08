@@ -76,8 +76,8 @@ class AuthController extends Controller
      *             @OA\Property(property="nome", type="string", example="João"),
      *             @OA\Property(property="email", type="string", example="joao@example.com"),
      *             @OA\Property(property="password", type="string", example="secret"),
-     *             @OA\Property(property="tipo", type="string", example="investidor"),
-     *             @OA\Property(property="telefone", type="string", example="11999998888")
+     *             @OA\Property(property="type", type="string", example="investidor"),
+     *             @OA\Property(property="phone", type="string", example="11999998888")
      *         )
      *     ),
 
@@ -93,16 +93,16 @@ class AuthController extends Controller
             'nome' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'tipo' => 'sometimes|string|in:investidor,admin,compliance,suporte',
-            'telefone' => 'sometimes|nullable|string|max:30',
+            'type' => 'sometimes|string|in:investidor,admin,compliance,suporte',
+            'phone' => 'sometimes|nullable|string|max:30',
         ]);
 
         $user = User::create([
             'nome' => $data['nome'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']), // ← CORRETO
-            'tipo' => $data['tipo'] ?? 'investidor',
-            'telefone' => $data['telefone'] ?? null,
+            'type' => $data['type'] ?? 'investidor',
+            'phone' => $data['telefone'] ?? null,
         ]);
 
         return response()->json($user, 201);

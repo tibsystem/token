@@ -79,6 +79,7 @@ Route::prefix('investor')->middleware(['auth:investor'])->group(function () {
 
     // Investimentos
     Route::get('investments/{id}', [InvestmentController::class, 'show']);
+    Route::get('investments', [InvestmentController::class, 'index']);
     Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
     Route::get('investments/history', [InvestmentController::class, 'history']);
     Route::get('me/investimentos', fn(Request $request) => $request->user()->investments);
