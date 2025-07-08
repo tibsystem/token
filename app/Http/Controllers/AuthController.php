@@ -140,26 +140,26 @@ class AuthController extends Controller
 
         $data = $request->validate([
             'email' => 'required|email',
-            'senha' => 'required|string'
+            'password' => 'required|string'
         ]);
 
         // 1. Tenta logar como Pessoa Física (investor tipo 'pf')
-        $investor = Investor::where('email', $data['email'])->where('tipo', 'pf')->first();
+        $investor = Investor::where('email', $data['email'])->where('type', 'pf')->first();
 
-        if ($investor && Hash::check($data['senha'], $investor->senha_hash)) {
+        if ($investor && Hash::check($data['password'], $investor->senha_hash)) {
             $token = auth('investor')->login($investor);
 
             return response()->json([
                 'message' => 'Login realizado com sucesso (Pessoa Física)',
                 'token' => $token,
-                'investidor' => $investor,
+                'investor' => $investor,
             ]);
         }
 
         // 2. Tenta logar como Participante de uma Pessoa Jurídica
         $participant = Participant::where('email', $data['email'])->first();
 
-        if ($participant && Hash::check($data['senha'], $participant->password)) {
+        if ($participant && Hash::check($data['password'], $participant->password)) {
             $investorPJ = $participant->investor;
 
             if ($investorPJ && $investorPJ->tipo === 'pj') {
@@ -168,7 +168,7 @@ class AuthController extends Controller
                 return response()->json([
                     'message' => 'Login realizado com sucesso (via Participante)',
                     'token' => $token,
-                    'investidor' => $investorPJ,
+                    'investor' => $investorPJ,
                     'participant' => [
                         'name' => $participant->name,
                         'email' => $participant->email,
