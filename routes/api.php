@@ -76,7 +76,7 @@ Route::prefix('investor')->middleware(['auth:investor'])->group(function () {
     Route::get('wallet/{id}', [WalletController::class, 'show']);
     Route::post('wallet/add-funds', [WalletController::class, 'addFunds']);
     Route::post('wallet/withdraw', [WalletController::class, 'withdraw']);
-
+ 
     // Investimentos
     Route::get('investments/{id}', [InvestmentController::class, 'show']);
     Route::get('investments', [InvestmentController::class, 'index']);
