@@ -72,15 +72,15 @@ class InvestmentController extends Controller
                     $property->save();
                 }
 
-          
+
 
                 $investment = Investment::create($data);
 
-                    $settings = \App\Models\PlatformSetting::first();
-                    $percent = $settings?->taxa_compra_token ?? 0;
+                $settings = \App\Models\PlatformSetting::first();
+                $percent = $settings?->taxa_compra_token ?? 0;
 
                 if ($data['origem'] === 'plataforma') {
-                    $valorTotal = ($data['qtd_tokens'] * $data['valor_unitario']) + (($data['qtd_tokens'] * $data['valor_unitario'])*($percent / 100));
+                    $valorTotal = ($data['qtd_tokens'] * $data['valor_unitario']) + (($data['qtd_tokens'] * $data['valor_unitario']) * ($percent / 100));
                     $valorTotalSem = ($data['qtd_tokens'] * $data['valor_unitario']);
 
 
@@ -103,7 +103,7 @@ class InvestmentController extends Controller
                         $carteira->save();
                     }
 
-                   
+
 
                     $platformWallet = \App\Models\PlatformWallet::first();
                     if ($platformWallet) {
@@ -156,7 +156,8 @@ class InvestmentController extends Controller
 
                 $tokenAmount = bcmul((string) $investment->qtd_tokens, '1000000000000000000');
                 $process = new Process([
-                    'node', base_path('scripts/transfer_token.js'),
+                    'node',
+                    base_path('scripts/transfer_token.js'),
                     $property->contract_address,
                     $abiPath,
                     $privKey,
@@ -209,17 +210,70 @@ class InvestmentController extends Controller
      *     @OA\Response(response=200, description="Sucesso")
      * )
      */
-     public function index()
+    public function index()
     {
-        return response()->json(Investment::all());
+        $investments = Investment::with('property')->get();
+
+        $response = $investments->map(function ($investment) {
+            $property = $investment->property;
+
+            return [
+                'id' => $investment->id,
+                'title' => $property->title,
+                'description' => $property->description,
+                'location' => $property->location,
+                'imageUrl' => $property->image_url,
+                'guaranteeLevelPercentage' => $property->guarantee_level_percentage,
+                'status' => $investment->status,
+                'tokensAvailable' => $property->qtd_tokens,
+                'tokensOriginal' => $property->qtd_tokens_original,
+                'totalValue' => $property->valor_total,
+                'tokenizationDate' => $property->data_tokenizacao,
+            ];
+        });
+
+        return response()->json($response);
     }
 
-      public function show($id)
+
+    public function show($id)
     {
-        $investment = Investment::where('id_investidor', $id)->get();
-        return response()->json($investment);
+        $investment = Investment::with('property', 'investor')->findOrFail($id);
+        $property = $investment->property;
+
+        return response()->json([
+            'id' => $investment->id,
+            'userId' => $investment->id_investidor,
+            'title' => $property->title,
+            'description' => $property->description,
+            'location' => $property->location,
+            'totalValue' => $property->valor_total,
+            'tokensAvailable' => $property->qtd_tokens,
+            'tokensOriginal' => $property->qtd_tokens_original,
+            'smartModelId' => $property->smart_model_id,
+            'contractModelId' => $property->contract_model_id,
+            'status' => $investment->status,
+            'tokenizationDate' => $property->data_tokenizacao,
+            'createdAt' => $investment->created_at,
+            'updatedAt' => $investment->updated_at,
+            'contractAddress' => $property->contract_address,
+            'tokenSymbol' => $property->token_symbol,
+            'tokenName' => $property->token_name,
+            'contractAbi' => $property->contract_abi,
+            'totalSupply' => $property->total_supply,
+            'imageUrl' => $property->image_url,
+            'guaranteeLevelPercentage' => $property->guarantee_level_percentage,
+            'debtor' => $property->devedor ?? 'N/A',
+            'amortizationFlow' => $property->fluxo_amortizacao ?? 'N/A',
+            'collateral' => $property->colateral ?? 'N/A',
+            'minimumValue' => $property->valor_minimo ?? 1000.00,
+            'investmentProgress' => 0.00, // Pode calcular baseado em tokens vendidos / total
+            'schedule' => $property->cronograma ?? 'Disponível no contrato',
+            'guarantee' => $property->garantia ?? 'Imóveis, Recebíveis, Cotas e Aval',
+        ]);
     }
-    
+
+
     public function history()
     {
         return response()->json([]);
