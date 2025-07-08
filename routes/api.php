@@ -33,15 +33,15 @@ Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/investor-login', [AuthController::class, 'loginInvestidor']);
 Route::get('polygon/balance/{address}', [PolygonController::class, 'balance']);
+Route::post('register_investors', [InvestorController::class, 'store']);
 
 // Dados do usuário autenticado
-Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
+Route::middleware('auth:api')->get('/user', fn(Request $request) => $request->user());
 
 // Rotas de Admin (com prefixo e middleware)
 Route::prefix('admin')->middleware(['auth:api', 'isAdmin'])->group(function () {
     // Investors
     Route::get('investors', [InvestorController::class, 'index']);
-    Route::post('investors', [InvestorController::class, 'store']);
     Route::get('investors/{id}', [InvestorController::class, 'show']);
     Route::put('investors/{id}', [InvestorController::class, 'update']);
     Route::delete('investors/{id}', [InvestorController::class, 'destroy']);
@@ -81,7 +81,7 @@ Route::prefix('investor')->middleware(['auth:investor'])->group(function () {
     Route::get('investments/{id}', [InvestmentController::class, 'show']);
     Route::post('investments/purchase', [InvestmentController::class, 'purchase']);
     Route::get('investments/history', [InvestmentController::class, 'history']);
-    Route::get('me/investimentos', fn (Request $request) => $request->user()->investments);
+    Route::get('me/investimentos', fn(Request $request) => $request->user()->investments);
 
     // Imóveis
     Route::get('properties', [PropertyController::class, 'index']);

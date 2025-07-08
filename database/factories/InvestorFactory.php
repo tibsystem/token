@@ -12,14 +12,14 @@ class InvestorFactory extends Factory
     public function definition()
     {
         return [
-            'nome' => $this->faker->name(),
+            'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'documento' => (string) $this->faker->randomNumber(9, true),
-            'telefone' => $this->faker->phoneNumber(),
-            'senha_hash' => bcrypt('password'),
+            'document' => (string) $this->faker->randomNumber(9, true),
+            'phone' => $this->faker->phoneNumber(),
+            'password' => bcrypt('password'),
             'status_kyc' => 'pendente',
-            'carteira_blockchain' => $this->faker->sha256(),
-            'carteira_private_key' => bin2hex(random_bytes(32)),
+            'wallet_blockchain' => $this->faker->sha256(),
+            'wallet_private_key' => bin2hex(random_bytes(32)),
         ];
     }
 }

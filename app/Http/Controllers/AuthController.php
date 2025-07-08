@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Investor;
+use App\Models\Participant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use OpenApi\Annotations as OA;
 
 
@@ -44,19 +48,19 @@ class AuthController extends Controller
      * )
      */
     public function login(Request $request)
-{
-    $credentials = $request->only(['email', 'password']);
+    {
+        $credentials = $request->only(['email', 'password']);
 
-    // Tenta autenticar diretamente
-    if (!$token = Auth::guard('api')->attempt($credentials)) {
-        return response()->json(['error' => 'Unauthorized'], 401);
+        // Tenta autenticar diretamente
+        if (!$token = Auth::guard('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return response()->json([
+            'token' => $token,
+            'user' => Auth::guard('api')->user()
+        ]);
     }
-
-    return response()->json([
-        'token' => $token,
-        'user' => Auth::guard('api')->user()
-    ]);
-}
 
     /**
      * Registrar novo usuário.
@@ -133,21 +137,47 @@ class AuthController extends Controller
      */
     public function loginInvestidor(Request $request)
     {
+
         $data = $request->validate([
             'email' => 'required|email',
             'senha' => 'required|string'
         ]);
 
-        $credentials = ['email' => $data['email'], 'password' => $data['senha']];
+        // 1. Tenta logar como Pessoa Física (investor tipo 'pf')
+        $investor = Investor::where('email', $data['email'])->where('tipo', 'pf')->first();
 
-        if (! $token = Auth::guard('investor')->attempt($credentials)) {
-            return response()->json(['message' => 'Credenciais inválidas'], 401);
+        if ($investor && Hash::check($data['senha'], $investor->senha_hash)) {
+            $token = auth('investor')->login($investor);
+
+            return response()->json([
+                'message' => 'Login realizado com sucesso (Pessoa Física)',
+                'token' => $token,
+                'investidor' => $investor,
+            ]);
         }
 
-        return response()->json([
-            'message' => 'Login realizado com sucesso',
-            'token' => $token,
-            'investidor' => Auth::guard('investor')->user(),
-        ]);
+        // 2. Tenta logar como Participante de uma Pessoa Jurídica
+        $participant = Participant::where('email', $data['email'])->first();
+
+        if ($participant && Hash::check($data['senha'], $participant->password)) {
+            $investorPJ = $participant->investor;
+
+            if ($investorPJ && $investorPJ->tipo === 'pj') {
+                $token = auth('investor')->login($investorPJ);
+
+                return response()->json([
+                    'message' => 'Login realizado com sucesso (via Participante)',
+                    'token' => $token,
+                    'investidor' => $investorPJ,
+                    'participant' => [
+                        'name' => $participant->name,
+                        'email' => $participant->email,
+                        'document' => $participant->document,
+                    ],
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Credenciais inválidas'], 401);
     }
 }

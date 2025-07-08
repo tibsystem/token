@@ -12,19 +12,20 @@ class Investor extends Authenticatable implements JWTSubject
     use HasFactory, HasApiTokens;
 
     protected $fillable = [
-        'nome',
+        'name',
         'email',
-        'documento',
-        'telefone',
-        'senha_hash',
+        'document',
+        'phone',
+        'password', // senha_hash
         'status_kyc',
-        'carteira_blockchain',
-        'carteira_private_key',
+        'wallet_blockchain',
+        'wallet_private_key',
+        'type', // 'pf' para pessoa física, 'pj' para pessoa jurídica
     ];
 
     protected $hidden = [
-        'senha_hash',
-        'carteira_private_key',
+        'password',
+        'wallet_private_key',
     ];
 
     public function investments()
@@ -53,6 +54,6 @@ class Investor extends Authenticatable implements JWTSubject
      */
     public function getAuthPassword()
     {
-        return $this->senha_hash;
+        return $this->password;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Investor;
 use App\Models\CarteiraInterna;
+use App\Models\Participant;
 use App\Helpers\WalletHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
@@ -144,26 +145,36 @@ class InvestorController extends Controller
      */
     public function store(Request $request)
     {
+
         $data = $request->validate([
-            'nome' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:investors,email',
-            'documento' => 'required|string|max:50',
-            'telefone' => 'nullable|string|max:30',
-            'senha' => 'required|string|min:6',
-            'status_kyc' => 'in:pendente,aprovado,rejeitado',
+            'document' => 'required|string|max:50',
+            'phone' => 'nullable|string|max:30',
+            'password' => 'required_without:participants|string|min:6',
+            'status_kyc' => 'in:pending,approved,rejected',
+            'participants' => 'nullable|array',
+            'participants.*.name' => 'required_with:participants|string|max:255',
+            'participants.*.email' => 'required_with:participants|email|unique:users,email',
+            'participants.*.password' => 'required_with:participants|string',
+            'participants.*.document' => 'required_with:participants|string',
         ]);
+
+        $type = !empty($data['participants']) ? 'pj' : 'pf';
 
         $wallet = WalletHelper::generatePolygonWallet();
 
+
         $investor = Investor::create([
-            'nome' => $data['nome'],
+            'name' => $data['name'],
             'email' => $data['email'],
-            'documento' => $data['documento'],
-            'telefone' => $data['telefone'],
-            'senha_hash' => Hash::make($data['senha']),
-            'status_kyc' => $data['status_kyc'] ?? 'pendente',
-            'carteira_blockchain' => $wallet['address'],
-            'carteira_private_key' => Crypt::encryptString($wallet['private_key']),
+            'document' => $data['document'],
+            'phone' => $data['phone'],
+            'password' => isset($data['password']) ? Hash::make($data['password']) : null,
+            'status_kyc' => $data['status_kyc'] ?? 'pending',
+            'wallet_blockchain' => $wallet['address'],
+            'wallet_private_key' => Crypt::encryptString($wallet['private_key']),
+            'type' => $type,
         ]);
 
         CarteiraInterna::create([
@@ -174,7 +185,17 @@ class InvestorController extends Controller
             'saldo_tokenizado' => [],
         ]);
 
+        if (!empty($data['participants'])) {
+            foreach ($data['participants'] as $p) {
+                Participant::create([
+                    'investor_id' => $investor->id,
+                    'name' => $p['name'],
+                    'email' => $p['email'],
+                    'document' => $p['document'],
+                    'password' => $p['password'],
+                ]);
+            }
+        }
         return response()->json($investor, 201);
     }
-
 }

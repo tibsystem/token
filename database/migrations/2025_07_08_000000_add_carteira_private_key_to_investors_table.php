@@ -9,14 +9,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('investors', function (Blueprint $table) {
-            $table->text('carteira_private_key')->nullable();
+            $table->text('wallet_private_key')->nullable();
         });
     }
 
     public function down()
     {
         Schema::table('investors', function (Blueprint $table) {
-            $table->dropColumn('carteira_private_key');
+            $table->dropColumn('wallet_private_key');
         });
     }
 };
