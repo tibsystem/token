@@ -148,7 +148,7 @@ class InvestorController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:investors,email',
+            'email' => 'nullable|email|unique:investors,email',
             'document' => 'required|string|max:50',
             'phone' => 'nullable|string|max:30',
             'password' => 'required_without:participants|string|min:6',
@@ -167,7 +167,7 @@ class InvestorController extends Controller
 
         $investor = Investor::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'email' => isset($data['email']) ? $data['email'] : null,
             'document' => $data['document'],
             'phone' => $data['phone'],
             'password' => isset($data['password']) ? Hash::make($data['password']) : null,
