@@ -146,7 +146,7 @@ class AuthController extends Controller
         // 1. Tenta logar como Pessoa Física (investor tipo 'pf')
         $investor = Investor::where('email', $data['email'])->where('type', 'pf')->first();
 
-        if ($investor && Hash::check($data['password'], $investor->senha_hash)) {
+        if ($investor && Hash::check($data['password'], $investor->password)) {
             $token = auth('investor')->login($investor);
 
             return response()->json([
