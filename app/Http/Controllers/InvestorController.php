@@ -170,7 +170,7 @@ class InvestorController extends Controller
             'email' => isset($data['email']) ? $data['email'] : null,
             'document' => $data['document'],
             'phone' => $data['phone'],
-            'password' => isset($data['password']) ? Hash::make($data['password']) : null,
+            'password' => isset($data['password']) ? $data['password'] : null,
             'status_kyc' => $data['status_kyc'] ?? 'pending',
             'wallet_blockchain' => $wallet['address'],
             'wallet_private_key' => Crypt::encryptString($wallet['private_key']),
