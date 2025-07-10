@@ -18,7 +18,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'http://backend.ib3capital.app.br', 'https://backend.ib3capital.app.br'], // ajuste para a porta do seu front-end
+    'allowed_origins' => ['*'], // ajuste para a porta do seu front-end
 
     'allowed_origins_patterns' => [],
 
