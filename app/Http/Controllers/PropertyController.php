@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Artisan;
 use OpenApi\Annotations as OA;
 
@@ -149,20 +151,55 @@ class PropertyController extends Controller
             'modelo_smart_id' => 'nullable|integer',
             'status' => 'required|in:ativo,vendido,oculto',
             'data_tokenizacao' => 'nullable|date',
+            'files' => 'nullable|array',
+            'files.*' => 'string|starts_with:data:image/',
         ]);
 
+        // Cria o imóvel
         $property = $request->user()->properties()->create(
-            $data + ['qtd_tokens_original' => $request->qtd_tokens]
+            $data + ['qtd_tokens_original' => $data['qtd_tokens']]
         );
 
-        // Cria carteira off-chain para o imóvel recém cadastrado
+        // Cria a carteira associada
         \App\Models\PropertyWallet::create([
             'property_id' => $property->id,
             'saldo_disponivel' => 0,
             'saldo_bloqueado' => 0,
         ]);
 
-        return response()->json($property, 201);
+        // Processa as imagens em base64
+        if (!empty($data['files'])) {
+            foreach ($data['files'] as $fileBase64) {
+                try {
+                    if (!str_contains($fileBase64, ',')) continue;
+
+                    [$meta, $base64] = explode(',', $fileBase64, 2);
+
+                    if (!preg_match('/^data:image\/(\w+);base64$/', $meta, $matches)) continue;
+                    $extension = strtolower($matches[1]);
+
+                    // Nome do arquivo
+                    $fileName = Str::random(10) . '_' . date('dmY') . '.' . $extension;
+                    $path = 'properties/' . $property->id . '/' . $fileName;
+
+                    Storage::put($path, base64_decode($base64));
+                    $size = Storage::size($path);
+                    Storage::setVisibility($path, 'public');
+                    $url = Storage::url($path);
+
+                    $property->files()->create([
+                        'name' => 'Imagem do imóvel - ' . $property->titulo,
+                        'path' => $url,
+                        'type_file' => 'foto_imovel',
+                        'size' => $size,
+                    ]);
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 500);
+                }
+            }
+        }
+
+        return response()->json($property->load('files'), 201);
     }
 
     /**

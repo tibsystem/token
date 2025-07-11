@@ -39,6 +39,11 @@ class Property extends Model
         return $this->hasMany(Investment::class, 'id_imovel');
     }
 
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     /**
      * Diminui a quantidade disponível de tokens do imóvel.
      *
