@@ -718,71 +718,104 @@
             }
         },
         "/api/properties": {
-            "get": {
-                "tags": [
-                    "Properties"
-                ],
-                "summary": "Listar imóveis",
-                "description": "Listar imóveis cadastrados.",
-                "operationId": "ae50890d9da51a5cfe01cd2151d4077a",
-                "responses": {
-                    "200": {
-                        "description": "Sucesso"
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            },
             "post": {
                 "tags": [
                     "Properties"
                 ],
-                "summary": "Criar imóvel",
-                "description": "Cadastrar novo imóvel.",
-                "operationId": "debc241247e30f0490b9e236483217d0",
+                "summary": "Criar nova propriedade",
+                "description": "Cria um novo registro de propriedade com informações como título, valor total, quantidade de tokens, contrato inteligente e anexos.",
+                "operationId": "createProperty",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "titulo",
-                                    "localizacao",
-                                    "valor_total",
-                                    "qtd_tokens",
-                                    "status"
+                                    "title",
+                                    "description",
+                                    "total_value",
+                                    "total_tokens",
+                                    "smart_contract_model_id",
+                                    "attachments"
                                 ],
                                 "properties": {
-                                    "titulo": {
+                                    "title": {
                                         "type": "string",
-                                        "example": "Apartamento Vista Mar"
+                                        "example": "Apartamento em Copacabana"
                                     },
-                                    "descricao": {
+                                    "description": {
                                         "type": "string",
-                                        "example": "Descrição do imóvel"
+                                        "example": "Imóvel localizado na zona sul do Rio de Janeiro."
                                     },
-                                    "localizacao": {
+                                    "location": {
                                         "type": "string",
-                                        "example": "Rio de Janeiro"
+                                        "example": "Rua Exemplo, 123 - Copacabana, RJ"
                                     },
-                                    "valor_total": {
+                                    "total_value": {
                                         "type": "number",
-                                        "example": 500000
+                                        "example": 1500000
                                     },
-                                    "qtd_tokens": {
+                                    "total_tokens": {
                                         "type": "integer",
-                                        "example": 10000
+                                        "example": 1500
+                                    },
+                                    "smart_contract_model_id": {
+                                        "type": "integer",
+                                        "example": 100
                                     },
                                     "status": {
                                         "type": "string",
-                                        "example": "ativo"
+                                        "enum": [
+                                            "active",
+                                            "sold",
+                                            "pending",
+                                            "hidden"
+                                        ],
+                                        "example": "pending"
                                     },
-                                    "data_tokenizacao": {
+                                    "tokenization_date": {
                                         "type": "string",
-                                        "example": "2024-05-20"
+                                        "format": "date-time",
+                                        "example": "2025-07-11T11:03:05-03:00"
+                                    },
+                                    "files": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "data:image/png;base64,iVBORw0KGgoAAAANS..."
+                                        }
+                                    },
+                                    "attachments": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "required": [
+                                                "description",
+                                                "file"
+                                            ],
+                                            "properties": {
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Contrato de compra e venda"
+                                                },
+                                                "file": {
+                                                    "type": "string",
+                                                    "example": "data:application/pdf;base64,JVBERi0xLjQK..."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Contrato_Copacabana.pdf"
+                                                },
+                                                "size": {
+                                                    "type": "integer",
+                                                    "example": 43573
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "application/pdf"
+                                                }
+                                            }
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -792,7 +825,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Criado"
+                        "description": "Propriedade criada com sucesso"
                     }
                 },
                 "security": [

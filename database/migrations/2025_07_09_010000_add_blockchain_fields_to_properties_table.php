@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->foreignId('contract_model_id')->nullable()->after('modelo_smart_id');
+            $table->foreignId('contract_model_id')->nullable()->after('smart_contract_model_id');
             $table->string('contract_address')->nullable();
             $table->string('token_symbol')->nullable();
             $table->string('token_name')->nullable();

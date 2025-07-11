@@ -19,7 +19,7 @@ class PropertyFactory extends Factory
             'valor_total' => $this->faker->randomFloat(2, 10000, 100000),
             'qtd_tokens' => $tokens = $this->faker->numberBetween(1, 1000),
             'qtd_tokens_original' => $tokens,
-            'modelo_smart_id' => null,
+            'smart_contract_model_id' => null,
             'status' => 'ativo',
             'data_tokenizacao' => now(),
             'user_id' => User::factory(),

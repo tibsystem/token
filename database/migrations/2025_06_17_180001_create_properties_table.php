@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->text('descricao');
-            $table->string('localizacao');
-            $table->decimal('valor_total', 15, 2);
-            $table->integer('qtd_tokens');
-            $table->unsignedBigInteger('modelo_smart_id')->nullable();
-            $table->enum('status', ['ativo', 'vendido', 'oculto'])->default('ativo');
-            $table->dateTime('data_tokenizacao');
+            $table->string('title');
+            $table->text('description');
+            $table->string('location')->nullable(); // se não for mais obrigatório
+            $table->decimal('total_value', 15, 2);
+            $table->integer('total_tokens');
+            $table->unsignedBigInteger('smart_contract_model_id')->nullable();
+            $table->enum('status', ['active', 'sold', 'pending', 'hidden'])->default('pending');
+            $table->dateTime('tokenization_date')->nullable(); // adicionei nullable caso não venha no início
             $table->timestamps();
         });
     }

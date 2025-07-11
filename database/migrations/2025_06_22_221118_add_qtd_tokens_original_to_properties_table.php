@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->integer('qtd_tokens_original')->after('qtd_tokens');
+            $table->integer('total_tokens_original')->after('total_tokens')->default(0);
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->dropColumn('qtd_tokens_original');
+            $table->dropColumn('total_tokens_original');
         });
     }
 };
